@@ -16,7 +16,7 @@ var (
 	maxDate      = time.Date(2010, time.December, 31, 23, 59, 59, 0, time.UTC)
 )
 
-func RandomUsernamePassword(length int) string {
+func RandomString(length int) string {
 	var sb strings.Builder
 	k := len(alphabet)
 
