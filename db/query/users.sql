@@ -45,37 +45,43 @@ SELECT *
 FROM users
 ORDER BY name, last_name;
 
--- name: UpdateUserByUsername :exec
+-- name: UpdateUserByUsername :one
 UPDATE users
 SET username = $2, updated_at = NOW()
-WHERE id = $1;
+WHERE id = $1
+RETURNING *;
 
--- name: UpdateUserByPassword :exec
+-- name: UpdateUserByPassword :one
 UPDATE users
 SET password = $2, updated_at = NOW()
-WHERE id = $1;
+WHERE id = $1
+RETURNING *;
 
--- name: UpdateUserByName :exec
+-- name: UpdateUserByName :one
 UPDATE users
 SET name = $2, updated_at = NOW()
-WHERE id = $1;
+WHERE id = $1
+RETURNING *;
 
--- name: UpdateUserByLastName :exec
+-- name: UpdateUserByLastName :one
 UPDATE users
 SET last_name = $2, updated_at = NOW()
-WHERE id = $1;
+WHERE id = $1
+RETURNING *;
 
--- name: UpdateUserByBirth :exec
+-- name: UpdateUserByBirth :one
 UPDATE users
 SET birth = $2, updated_at = NOW()
-WHERE id = $1;
+WHERE id = $1
+RETURNING *;
 
--- name: UpdateUserByEmail :exec
+-- name: UpdateUserByEmail :one
 UPDATE users
 SET email = $2, updated_at = NOW()
-WHERE id = $1;
+WHERE id = $1
+RETURNING *;
 
--- name: UpdateUser :exec
+-- name: UpdateUser :one
 UPDATE users
 SET 
   username = $2, 
@@ -85,7 +91,8 @@ SET
   birth = $6, 
   email = $7, 
   updated_at = NOW()
-WHERE id = $1;
+WHERE id = $1
+RETURNING *;
 
 -- name: DeleteUser :exec
 DELETE FROM users

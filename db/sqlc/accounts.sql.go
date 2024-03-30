@@ -351,7 +351,7 @@ func (q *Queries) GetAccountsReports(ctx context.Context, arg GetAccountsReports
 	return sum_value, err
 }
 
-const updateAccount = `-- name: UpdateAccount :exec
+const updateAccount = `-- name: UpdateAccount :one
 UPDATE accounts
 SET 
   title = $2, 
@@ -369,17 +369,30 @@ type UpdateAccountParams struct {
 	Value       string `json:"value"`
 }
 
-func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) error {
-	_, err := q.db.ExecContext(ctx, updateAccount,
+func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, updateAccount,
 		arg.ID,
 		arg.Title,
 		arg.Description,
 		arg.Value,
 	)
-	return err
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CategoryID,
+		&i.Title,
+		&i.Type,
+		&i.Description,
+		&i.Value,
+		&i.Date,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updateAccountDepositInto = `-- name: UpdateAccountDepositInto :exec
+const updateAccountDepositInto = `-- name: UpdateAccountDepositInto :one
 UPDATE accounts
 SET
   value = value + $2,
@@ -393,12 +406,25 @@ type UpdateAccountDepositIntoParams struct {
 	Value string `json:"value"`
 }
 
-func (q *Queries) UpdateAccountDepositInto(ctx context.Context, arg UpdateAccountDepositIntoParams) error {
-	_, err := q.db.ExecContext(ctx, updateAccountDepositInto, arg.ID, arg.Value)
-	return err
+func (q *Queries) UpdateAccountDepositInto(ctx context.Context, arg UpdateAccountDepositIntoParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, updateAccountDepositInto, arg.ID, arg.Value)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CategoryID,
+		&i.Title,
+		&i.Type,
+		&i.Description,
+		&i.Value,
+		&i.Date,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
-const updateAccountWithdrawFrom = `-- name: UpdateAccountWithdrawFrom :exec
+const updateAccountWithdrawFrom = `-- name: UpdateAccountWithdrawFrom :one
 UPDATE accounts
 SET
   value = value - $2,
@@ -412,7 +438,20 @@ type UpdateAccountWithdrawFromParams struct {
 	Value string `json:"value"`
 }
 
-func (q *Queries) UpdateAccountWithdrawFrom(ctx context.Context, arg UpdateAccountWithdrawFromParams) error {
-	_, err := q.db.ExecContext(ctx, updateAccountWithdrawFrom, arg.ID, arg.Value)
-	return err
+func (q *Queries) UpdateAccountWithdrawFrom(ctx context.Context, arg UpdateAccountWithdrawFromParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, updateAccountWithdrawFrom, arg.ID, arg.Value)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.CategoryID,
+		&i.Title,
+		&i.Type,
+		&i.Description,
+		&i.Value,
+		&i.Date,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

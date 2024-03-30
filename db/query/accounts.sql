@@ -74,7 +74,7 @@ FROM accounts
 WHERE user_id = $1 
 AND type = $2;
 
--- name: UpdateAccount :exec
+-- name: UpdateAccount :one
 UPDATE accounts
 SET 
   title = $2, 
@@ -84,7 +84,7 @@ SET
 WHERE id = $1
 RETURNING *;
 
--- name: UpdateAccountDepositInto :exec
+-- name: UpdateAccountDepositInto :one
 UPDATE accounts
 SET
   value = value + $2,
@@ -92,7 +92,7 @@ SET
 WHERE id = $1
 RETURNING *;
 
--- name: UpdateAccountWithdrawFrom :exec
+-- name: UpdateAccountWithdrawFrom :one
 UPDATE accounts
 SET
   value = value - $2,

@@ -28,7 +28,7 @@ AND
 AND
   LOWER(description) LIKE CONCAT('%', LOWER(@description::text), '%');
 
--- name: UpdateCategory :exec
+-- name: UpdateCategory :one
 UPDATE categories
 SET
   title = $2,

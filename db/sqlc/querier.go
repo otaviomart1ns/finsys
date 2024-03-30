@@ -30,17 +30,17 @@ type Querier interface {
 	GetUserByNameAndLastName(ctx context.Context, arg GetUserByNameAndLastNameParams) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)
 	GetUsers(ctx context.Context) ([]User, error)
-	UpdateAccount(ctx context.Context, arg UpdateAccountParams) error
-	UpdateAccountDepositInto(ctx context.Context, arg UpdateAccountDepositIntoParams) error
-	UpdateAccountWithdrawFrom(ctx context.Context, arg UpdateAccountWithdrawFromParams) error
-	UpdateCategory(ctx context.Context, arg UpdateCategoryParams) error
-	UpdateUser(ctx context.Context, arg UpdateUserParams) error
-	UpdateUserByBirth(ctx context.Context, arg UpdateUserByBirthParams) error
-	UpdateUserByEmail(ctx context.Context, arg UpdateUserByEmailParams) error
-	UpdateUserByLastName(ctx context.Context, arg UpdateUserByLastNameParams) error
-	UpdateUserByName(ctx context.Context, arg UpdateUserByNameParams) error
-	UpdateUserByPassword(ctx context.Context, arg UpdateUserByPasswordParams) error
-	UpdateUserByUsername(ctx context.Context, arg UpdateUserByUsernameParams) error
+	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error)
+	UpdateAccountDepositInto(ctx context.Context, arg UpdateAccountDepositIntoParams) (Account, error)
+	UpdateAccountWithdrawFrom(ctx context.Context, arg UpdateAccountWithdrawFromParams) (Account, error)
+	UpdateCategory(ctx context.Context, arg UpdateCategoryParams) (Category, error)
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
+	UpdateUserByBirth(ctx context.Context, arg UpdateUserByBirthParams) (User, error)
+	UpdateUserByEmail(ctx context.Context, arg UpdateUserByEmailParams) (User, error)
+	UpdateUserByLastName(ctx context.Context, arg UpdateUserByLastNameParams) (User, error)
+	UpdateUserByName(ctx context.Context, arg UpdateUserByNameParams) (User, error)
+	UpdateUserByPassword(ctx context.Context, arg UpdateUserByPasswordParams) (User, error)
+	UpdateUserByUsername(ctx context.Context, arg UpdateUserByUsernameParams) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)

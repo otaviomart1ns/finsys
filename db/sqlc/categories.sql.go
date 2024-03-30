@@ -137,7 +137,7 @@ func (q *Queries) GetCategoryByID(ctx context.Context, id int32) (Category, erro
 	return i, err
 }
 
-const updateCategory = `-- name: UpdateCategory :exec
+const updateCategory = `-- name: UpdateCategory :one
 UPDATE categories
 SET
   title = $2,
@@ -153,7 +153,17 @@ type UpdateCategoryParams struct {
 	Description string `json:"description"`
 }
 
-func (q *Queries) UpdateCategory(ctx context.Context, arg UpdateCategoryParams) error {
-	_, err := q.db.ExecContext(ctx, updateCategory, arg.ID, arg.Title, arg.Description)
-	return err
+func (q *Queries) UpdateCategory(ctx context.Context, arg UpdateCategoryParams) (Category, error) {
+	row := q.db.QueryRowContext(ctx, updateCategory, arg.ID, arg.Title, arg.Description)
+	var i Category
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.Title,
+		&i.Type,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
