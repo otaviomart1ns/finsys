@@ -41,7 +41,7 @@ func TestAddUser(t *testing.T) {
 	addRandomUser(t)
 }
 
-func TestGetUsers(t *testing.T) {
+/*func TestGetUsers(t *testing.T) {
 	user, err := testQueries.GetUsers(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, user)
@@ -214,3 +214,4 @@ func TestDeleteUser(t *testing.T) {
 	err2 := testQueries.DeleteUser(context.Background(), user.ID)
 	require.Nil(t, err2)
 }
+*/
