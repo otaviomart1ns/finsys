@@ -57,3 +57,8 @@ func RandomCategoryType() string {
 	categoryType := categoryType[rand.Intn(len(categoryType))]
 	return categoryType
 }
+
+func RandomAccountValue() int32 {
+	value := rand.Intn(100)
+	return int32(value)
+}
