@@ -10,4 +10,7 @@ migrationup:
 migrationdown:
 	migrate -path db/migration -database "postgresql://postgres:pgpwd2024@localhost:5432/finsys?sslmode=disable" -verbose down
 
-.PHONY: postgresql createdb migrationup migrationdown
+sqlc:
+	docker run --rm -v $(pwd):/src -w /src kjconroy/sqlc generate
+
+.PHONY: postgresql createdb migrationup sqlc migrationdown
