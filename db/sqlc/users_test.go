@@ -12,8 +12,8 @@ func addRandomUser(t *testing.T) User {
 	firstName, lastName := utils.RandomName()
 
 	arg := AddUserParams{
-		Username: utils.RandomUsernamePassword(6),
-		Password: utils.RandomUsernamePassword(10),
+		Username: utils.RandomString(6),
+		Password: utils.RandomString(10),
 		Name:     firstName,
 		LastName: lastName,
 		Birth:    utils.RandomBirthDate(),
@@ -39,6 +39,12 @@ func assertUserEquals(t *testing.T, expected, actual User) {
 
 func TestAddUser(t *testing.T) {
 	addRandomUser(t)
+}
+
+func TestGetUsers(t *testing.T) {
+	user, err := testQueries.GetUsers(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, user)
 }
 
 func TestGetUserByID(t *testing.T) {
@@ -101,8 +107,110 @@ func TestGetUserByEmailAndPassword(t *testing.T) {
 	assertUserEquals(t, arg, user)
 }
 
-func TestGetUsers(t *testing.T) {
-	user, err := testQueries.GetUsers(context.Background())
+func TestUpdateUser(t *testing.T) {
+	user := addRandomUser(t)
+
+	firstName, lastName := utils.RandomName()
+
+	params := UpdateUserParams{
+		ID:       user.ID,
+		Username: utils.RandomString(8),
+		Password: utils.RandomString(12),
+		Name:     firstName,
+		LastName: lastName,
+		Birth:    utils.RandomBirthDate(),
+		Email:    utils.RandomEmail(firstName, lastName),
+	}
+
+	err := testQueries.UpdateUser(context.Background(), params)
 	require.NoError(t, err)
-	require.NotEmpty(t, user)
+}
+
+func TestUpdateUserByUsername(t *testing.T) {
+	user := addRandomUser(t)
+
+	params := UpdateUserByUsernameParams{
+		ID:       user.ID,
+		Username: utils.RandomString(8),
+	}
+
+	err := testQueries.UpdateUserByUsername(context.Background(), params)
+	require.NoError(t, err)
+}
+
+func TestUpdateUserByPassword(t *testing.T) {
+	user := addRandomUser(t)
+
+	params := UpdateUserByPasswordParams{
+		ID:       user.ID,
+		Password: utils.RandomString(12),
+	}
+
+	err := testQueries.UpdateUserByPassword(context.Background(), params)
+	require.NoError(t, err)
+}
+
+func TestUpdateUserByName(t *testing.T) {
+	user := addRandomUser(t)
+
+	firstName, _ := utils.RandomName()
+
+	params := UpdateUserByNameParams{
+		ID:   user.ID,
+		Name: firstName,
+	}
+
+	err := testQueries.UpdateUserByName(context.Background(), params)
+	require.NoError(t, err)
+}
+
+func TestUpdateUserByLastName(t *testing.T) {
+	user := addRandomUser(t)
+
+	_, lastName := utils.RandomName()
+
+	params := UpdateUserByLastNameParams{
+		ID:       user.ID,
+		LastName: lastName,
+	}
+
+	err := testQueries.UpdateUserByLastName(context.Background(), params)
+	require.NoError(t, err)
+}
+
+func TestUpdateUserByBirth(t *testing.T) {
+	user := addRandomUser(t)
+
+	params := UpdateUserByBirthParams{
+		ID:    user.ID,
+		Birth: utils.RandomBirthDate(),
+	}
+
+	err := testQueries.UpdateUserByBirth(context.Background(), params)
+	require.NoError(t, err)
+}
+
+func TestUpdateUserByEmail(t *testing.T) {
+	user := addRandomUser(t)
+
+	firstName, lastName := utils.RandomName()
+
+	params := UpdateUserByEmailParams{
+		ID:    user.ID,
+		Email: utils.RandomEmail(firstName, lastName),
+	}
+
+	err := testQueries.UpdateUserByEmail(context.Background(), params)
+	require.NoError(t, err)
+}
+
+func TestDeleteUser(t *testing.T) {
+	user := addRandomUser(t)
+
+	err := testQueries.DeleteUser(context.Background(), user.ID)
+	require.NoError(t, err)
+
+	//Se a primeira execução de "DeleteUser" foi bem sucedida,a segunda deve retornar nil
+	err2 := testQueries.DeleteUser(context.Background(), user.ID)
+	require.Nil(t, err2)
 }
