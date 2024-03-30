@@ -35,12 +35,12 @@ type Querier interface {
 	UpdateAccountWithdrawFrom(ctx context.Context, arg UpdateAccountWithdrawFromParams) error
 	UpdateCategory(ctx context.Context, arg UpdateCategoryParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) error
-	UpdateUserBirth(ctx context.Context, arg UpdateUserBirthParams) error
-	UpdateUserEmail(ctx context.Context, arg UpdateUserEmailParams) error
-	UpdateUserLastName(ctx context.Context, arg UpdateUserLastNameParams) error
-	UpdateUserName(ctx context.Context, arg UpdateUserNameParams) error
-	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
-	UpdateUserUsername(ctx context.Context, arg UpdateUserUsernameParams) error
+	UpdateUserByBirth(ctx context.Context, arg UpdateUserByBirthParams) error
+	UpdateUserByEmail(ctx context.Context, arg UpdateUserByEmailParams) error
+	UpdateUserByLastName(ctx context.Context, arg UpdateUserByLastNameParams) error
+	UpdateUserByName(ctx context.Context, arg UpdateUserByNameParams) error
+	UpdateUserByPassword(ctx context.Context, arg UpdateUserByPasswordParams) error
+	UpdateUserByUsername(ctx context.Context, arg UpdateUserByUsernameParams) error
 }
 
 var _ Querier = (*Queries)(nil)

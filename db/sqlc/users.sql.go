@@ -271,98 +271,98 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 	return err
 }
 
-const updateUserBirth = `-- name: UpdateUserBirth :exec
+const updateUserByBirth = `-- name: UpdateUserByBirth :exec
 UPDATE users
 SET birth = $2, updated_at = NOW()
 WHERE id = $1
 `
 
-type UpdateUserBirthParams struct {
+type UpdateUserByBirthParams struct {
 	ID    int32     `json:"id"`
 	Birth time.Time `json:"birth"`
 }
 
-func (q *Queries) UpdateUserBirth(ctx context.Context, arg UpdateUserBirthParams) error {
-	_, err := q.db.ExecContext(ctx, updateUserBirth, arg.ID, arg.Birth)
+func (q *Queries) UpdateUserByBirth(ctx context.Context, arg UpdateUserByBirthParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserByBirth, arg.ID, arg.Birth)
 	return err
 }
 
-const updateUserEmail = `-- name: UpdateUserEmail :exec
+const updateUserByEmail = `-- name: UpdateUserByEmail :exec
 UPDATE users
 SET email = $2, updated_at = NOW()
 WHERE id = $1
 `
 
-type UpdateUserEmailParams struct {
+type UpdateUserByEmailParams struct {
 	ID    int32  `json:"id"`
 	Email string `json:"email"`
 }
 
-func (q *Queries) UpdateUserEmail(ctx context.Context, arg UpdateUserEmailParams) error {
-	_, err := q.db.ExecContext(ctx, updateUserEmail, arg.ID, arg.Email)
+func (q *Queries) UpdateUserByEmail(ctx context.Context, arg UpdateUserByEmailParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserByEmail, arg.ID, arg.Email)
 	return err
 }
 
-const updateUserLastName = `-- name: UpdateUserLastName :exec
+const updateUserByLastName = `-- name: UpdateUserByLastName :exec
 UPDATE users
 SET last_name = $2, updated_at = NOW()
 WHERE id = $1
 `
 
-type UpdateUserLastNameParams struct {
+type UpdateUserByLastNameParams struct {
 	ID       int32  `json:"id"`
 	LastName string `json:"last_name"`
 }
 
-func (q *Queries) UpdateUserLastName(ctx context.Context, arg UpdateUserLastNameParams) error {
-	_, err := q.db.ExecContext(ctx, updateUserLastName, arg.ID, arg.LastName)
+func (q *Queries) UpdateUserByLastName(ctx context.Context, arg UpdateUserByLastNameParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserByLastName, arg.ID, arg.LastName)
 	return err
 }
 
-const updateUserName = `-- name: UpdateUserName :exec
+const updateUserByName = `-- name: UpdateUserByName :exec
 UPDATE users
 SET name = $2, updated_at = NOW()
 WHERE id = $1
 `
 
-type UpdateUserNameParams struct {
+type UpdateUserByNameParams struct {
 	ID   int32  `json:"id"`
 	Name string `json:"name"`
 }
 
-func (q *Queries) UpdateUserName(ctx context.Context, arg UpdateUserNameParams) error {
-	_, err := q.db.ExecContext(ctx, updateUserName, arg.ID, arg.Name)
+func (q *Queries) UpdateUserByName(ctx context.Context, arg UpdateUserByNameParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserByName, arg.ID, arg.Name)
 	return err
 }
 
-const updateUserPassword = `-- name: UpdateUserPassword :exec
+const updateUserByPassword = `-- name: UpdateUserByPassword :exec
 UPDATE users
 SET password = $2, updated_at = NOW()
 WHERE id = $1
 `
 
-type UpdateUserPasswordParams struct {
+type UpdateUserByPasswordParams struct {
 	ID       int32  `json:"id"`
 	Password string `json:"password"`
 }
 
-func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
-	_, err := q.db.ExecContext(ctx, updateUserPassword, arg.ID, arg.Password)
+func (q *Queries) UpdateUserByPassword(ctx context.Context, arg UpdateUserByPasswordParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserByPassword, arg.ID, arg.Password)
 	return err
 }
 
-const updateUserUsername = `-- name: UpdateUserUsername :exec
+const updateUserByUsername = `-- name: UpdateUserByUsername :exec
 UPDATE users
 SET username = $2, updated_at = NOW()
 WHERE id = $1
 `
 
-type UpdateUserUsernameParams struct {
+type UpdateUserByUsernameParams struct {
 	ID       int32  `json:"id"`
 	Username string `json:"username"`
 }
 
-func (q *Queries) UpdateUserUsername(ctx context.Context, arg UpdateUserUsernameParams) error {
-	_, err := q.db.ExecContext(ctx, updateUserUsername, arg.ID, arg.Username)
+func (q *Queries) UpdateUserByUsername(ctx context.Context, arg UpdateUserByUsernameParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserByUsername, arg.ID, arg.Username)
 	return err
 }

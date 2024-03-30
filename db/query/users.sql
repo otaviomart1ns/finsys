@@ -45,32 +45,32 @@ SELECT *
 FROM users
 ORDER BY name, last_name;
 
--- name: UpdateUserUsername :exec
+-- name: UpdateUserByUsername :exec
 UPDATE users
 SET username = $2, updated_at = NOW()
 WHERE id = $1;
 
--- name: UpdateUserPassword :exec
+-- name: UpdateUserByPassword :exec
 UPDATE users
 SET password = $2, updated_at = NOW()
 WHERE id = $1;
 
--- name: UpdateUserName :exec
+-- name: UpdateUserByName :exec
 UPDATE users
 SET name = $2, updated_at = NOW()
 WHERE id = $1;
 
--- name: UpdateUserLastName :exec
+-- name: UpdateUserByLastName :exec
 UPDATE users
 SET last_name = $2, updated_at = NOW()
 WHERE id = $1;
 
--- name: UpdateUserBirth :exec
+-- name: UpdateUserByBirth :exec
 UPDATE users
 SET birth = $2, updated_at = NOW()
 WHERE id = $1;
 
--- name: UpdateUserEmail :exec
+-- name: UpdateUserByEmail :exec
 UPDATE users
 SET email = $2, updated_at = NOW()
 WHERE id = $1;
