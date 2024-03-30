@@ -14,7 +14,7 @@ func addRandomCategory(t *testing.T) Category {
 	params := AddCategoryParams{
 		UserID:      user.ID,
 		Title:       utils.RandomString(12),
-		Type:        "debit",
+		Type:        utils.RandomCategoryType(),
 		Description: utils.RandomString(20),
 	}
 
