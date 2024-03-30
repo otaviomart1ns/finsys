@@ -33,7 +33,7 @@ type AddAccountParams struct {
 	Title       string    `json:"title"`
 	Type        string    `json:"type"`
 	Description string    `json:"description"`
-	Value       string    `json:"value"`
+	Value       int32     `json:"value"`
 	Date        time.Time `json:"date"`
 }
 
@@ -142,7 +142,7 @@ type GetAccountsRow struct {
 	Title         string         `json:"title"`
 	Type          string         `json:"type"`
 	Description   string         `json:"description"`
-	Value         string         `json:"value"`
+	Value         int32          `json:"value"`
 	Date          time.Time      `json:"date"`
 	CreatedAt     sql.NullTime   `json:"created_at"`
 	CategoryTitle sql.NullString `json:"category_title"`
@@ -366,7 +366,7 @@ type UpdateAccountParams struct {
 	ID          int32  `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	Value       string `json:"value"`
+	Value       int32  `json:"value"`
 }
 
 func (q *Queries) UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error) {
@@ -402,8 +402,8 @@ RETURNING id, user_id, category_id, title, type, description, value, date, creat
 `
 
 type UpdateAccountDepositIntoParams struct {
-	ID    int32  `json:"id"`
-	Value string `json:"value"`
+	ID    int32 `json:"id"`
+	Value int32 `json:"value"`
 }
 
 func (q *Queries) UpdateAccountDepositInto(ctx context.Context, arg UpdateAccountDepositIntoParams) (Account, error) {
@@ -434,8 +434,8 @@ RETURNING id, user_id, category_id, title, type, description, value, date, creat
 `
 
 type UpdateAccountWithdrawFromParams struct {
-	ID    int32  `json:"id"`
-	Value string `json:"value"`
+	ID    int32 `json:"id"`
+	Value int32 `json:"value"`
 }
 
 func (q *Queries) UpdateAccountWithdrawFrom(ctx context.Context, arg UpdateAccountWithdrawFromParams) (Account, error) {

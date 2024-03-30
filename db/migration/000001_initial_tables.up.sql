@@ -28,7 +28,7 @@ CREATE TABLE accounts (
   title VARCHAR(255) NOT NULL,
   type VARCHAR(100) NOT NULL,
   description TEXT NOT NULL,
-  value NUMERIC(15, 2) NOT NULL,
+  value INT NOT NULL,
   date DATE NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
