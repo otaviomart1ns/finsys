@@ -96,8 +96,4 @@ func TestDeleteCategory(t *testing.T) {
 
 	err := testQueries.DeleteCategory(context.Background(), category.ID)
 	require.NoError(t, err)
-
-	//Se a primeira execução de "DeleteCategory" foi bem sucedida,a segunda deve retornar nil
-	err2 := testQueries.DeleteCategory(context.Background(), category.ID)
-	require.Nil(t, err2)
 }

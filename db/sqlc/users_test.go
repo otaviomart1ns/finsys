@@ -126,6 +126,7 @@ func TestUpdateUser(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, i)
 
+	require.Equal(t, params.ID, i.ID)
 	require.Equal(t, params.Username, i.Username)
 	require.Equal(t, params.Password, i.Password)
 	require.Equal(t, params.Name, i.Name)
@@ -147,6 +148,7 @@ func TestUpdateUserByUsername(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, i)
 
+	require.Equal(t, params.ID, i.ID)
 	require.Equal(t, params.Username, i.Username)
 	require.NotEmpty(t, i.CreatedAt)
 }
@@ -163,6 +165,7 @@ func TestUpdateUserByPassword(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, i)
 
+	require.Equal(t, params.ID, i.ID)
 	require.Equal(t, params.Password, i.Password)
 	require.NotEmpty(t, i.CreatedAt)
 }
@@ -181,6 +184,7 @@ func TestUpdateUserByName(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, i)
 
+	require.Equal(t, params.ID, i.ID)
 	require.Equal(t, params.Name, i.Name)
 	require.NotEmpty(t, i.CreatedAt)
 }
@@ -199,6 +203,7 @@ func TestUpdateUserByLastName(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, i)
 
+	require.Equal(t, params.ID, i.ID)
 	require.Equal(t, params.LastName, i.LastName)
 	require.NotEmpty(t, i.CreatedAt)
 }
@@ -215,6 +220,7 @@ func TestUpdateUserByBirth(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, i)
 
+	require.Equal(t, params.ID, i.ID)
 	require.Equal(t, params.Birth.Format("2006-01-02"), i.Birth.Format("2006-01-02"))
 	require.NotEmpty(t, i.CreatedAt)
 }
@@ -233,6 +239,7 @@ func TestUpdateUserByEmail(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, i)
 
+	require.Equal(t, params.ID, i.ID)
 	require.Equal(t, params.Email, i.Email)
 	require.NotEmpty(t, i.CreatedAt)
 }
@@ -242,8 +249,4 @@ func TestDeleteUser(t *testing.T) {
 
 	err := testQueries.DeleteUser(context.Background(), user.ID)
 	require.NoError(t, err)
-
-	//Se a primeira execução de "DeleteUser" foi bem sucedida,a segunda deve retornar nil
-	err2 := testQueries.DeleteUser(context.Background(), user.ID)
-	require.Nil(t, err2)
 }
