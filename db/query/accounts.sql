@@ -19,20 +19,15 @@ FROM accounts
 WHERE id = $1 
 LIMIT 1;
 
--- name: GetAccountsByUser :many
+-- name: GetAccountByUser :one
 SELECT *
 FROM accounts
 WHERE user_id = $1;
 
--- name: GetAccountsByCategory :many
+-- name: GetAccountByCategory :one
 SELECT *
 FROM accounts
 WHERE category_id = $1;
-
--- name: GetAccountsForUserByType :many
-SELECT *
-FROM accounts
-WHERE user_id = $1 AND type = $2;
 
 -- name: GetAccounts :many
 SELECT
@@ -62,13 +57,13 @@ AND
 AND
   a.date = COALESCE(sqlc.narg('date'), a.date);
 
--- name: GetAccountsReports :one
+-- name: GetAccountReports :one
 SELECT SUM(value) AS sum_value 
 FROM accounts
 WHERE user_id = $1 
 AND type = $2;
 
--- name: GetAccountsGraph :one
+-- name: GetAccountGraph :one
 SELECT COUNT(*) 
 FROM accounts
 WHERE user_id = $1 

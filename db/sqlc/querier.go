@@ -15,13 +15,12 @@ type Querier interface {
 	DeleteAccount(ctx context.Context, id int32) error
 	DeleteCategory(ctx context.Context, id int32) error
 	DeleteUser(ctx context.Context, id int32) error
+	GetAccountByCategory(ctx context.Context, categoryID int32) (Account, error)
 	GetAccountByID(ctx context.Context, id int32) (Account, error)
+	GetAccountByUser(ctx context.Context, userID int32) (Account, error)
+	GetAccountGraph(ctx context.Context, arg GetAccountGraphParams) (int64, error)
+	GetAccountReports(ctx context.Context, arg GetAccountReportsParams) (int64, error)
 	GetAccounts(ctx context.Context, arg GetAccountsParams) ([]GetAccountsRow, error)
-	GetAccountsByCategory(ctx context.Context, categoryID int32) ([]Account, error)
-	GetAccountsByUser(ctx context.Context, userID int32) ([]Account, error)
-	GetAccountsForUserByType(ctx context.Context, arg GetAccountsForUserByTypeParams) ([]Account, error)
-	GetAccountsGraph(ctx context.Context, arg GetAccountsGraphParams) (int64, error)
-	GetAccountsReports(ctx context.Context, arg GetAccountsReportsParams) (int64, error)
 	GetCategories(ctx context.Context, arg GetCategoriesParams) ([]Category, error)
 	GetCategoryByID(ctx context.Context, id int32) (Category, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
