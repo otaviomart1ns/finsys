@@ -1,0 +1,55 @@
+name: Pipeline CI - Environment Prod
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    name: Run test and migrations
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ["latest"]
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Setup Golang ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+        id: go
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install golang-migrate
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.12.2/migrate.linux-amd64.tar.gz | tar xvz
+          sudo mv migrate.linux-amd64 /usr/bin/migrate
+          which migrate
+
+      - name: Verify migrate version
+        run: migrate -version
+
+      - name: Run migration up
+        run: make migrationup
+
+      - name: Run unit and integration tests
+        run: make test
