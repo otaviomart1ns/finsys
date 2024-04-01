@@ -14,7 +14,7 @@ type Config struct {
 }
 
 func LoadEnv() (*Config, error) {
-	err := godotenv.Load("../../.env")
+	err := godotenv.Load("/home/otavio/pessoal/finsys/.env") //caminho absoluto para o .env
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
