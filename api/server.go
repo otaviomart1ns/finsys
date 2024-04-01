@@ -32,7 +32,8 @@ func NewServer(store *db.SQLStore) *Server {
 	//router.Use(CORSConfig())
 
 	router.POST("/user", server.addUser)
-	router.GET("/user/:username", server.getUserByUsername)
+	router.GET("/user", server.getUsers)
+	router.GET("/user/username/:username", server.getUserByUsername)
 	router.GET("/user/id/:id", server.getUserByID)
 
 	server.router = router

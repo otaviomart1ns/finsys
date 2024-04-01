@@ -36,6 +36,9 @@ func (server *Server) addUser(ctx *gin.Context) {
 	params := db.AddUserParams{
 		Username: req.Username,
 		Password: req.Password,
+		Name:     req.Name,
+		LastName: req.LastName,
+		Birth:    req.Birth,
 		Email:    req.Email,
 	}
 
@@ -47,13 +50,27 @@ func (server *Server) addUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
+func (server *Server) getUsers(ctx *gin.Context) {
+	user, err := server.store.GetUsers(ctx)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}
+
 type getUserByUsernameRequest struct {
-	Username string `json:"username" binding:"required"`
+	Username string `uri:"username" binding:"required"`
 }
 
 func (server *Server) getUserByUsername(ctx *gin.Context) {
 	var req getUserByUsernameRequest
-	err := ctx.ShouldBindJSON(&req)
+	err := ctx.ShouldBindUri(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 	}
