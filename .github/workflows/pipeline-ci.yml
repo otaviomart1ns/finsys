@@ -39,9 +39,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Create directory
+        run: mkdir -p /home/otavio/pessoal/finsys/
+
       - name: Create .env file
         run: |
-          mkdir /home/otavio/pessoal/finsys/
           echo "DB_DRIVER=${{ secrets.DB_DRIVER }}" > /home/otavio/pessoal/finsys/.env
           echo "DB_SOURCE=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}?sslmode=disable" >> /home/otavio/pessoal/finsys/.env
 
