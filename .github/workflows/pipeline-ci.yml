@@ -41,11 +41,8 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "DB_DRIVER=${{ secrets.DB_BRIVER }}" > .env
+          echo "DB_DRIVER=${{ secrets.DB_DRIVER }}" > .env
           echo "DB_SOURCE=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}?sslmode=disable" >> .env
-
-      - name: Verify .env file
-        run: cat .env
 
       - name: Install golang-migrate
         run: |
