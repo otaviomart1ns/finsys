@@ -39,6 +39,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Create .env file
+        run: |
+          echo "DB_DRIVER=${{ secrets.DB_BRIVER }}" > .env
+          echo "DB_SOURCE=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}?sslmode=disable" >> .env
+
+      - name: Verify .env file
+        run: cat .env
+
       - name: Install golang-migrate
         run: |
           curl -L https://github.com/golang-migrate/migrate/releases/download/v4.12.2/migrate.linux-amd64.tar.gz | tar xvz
