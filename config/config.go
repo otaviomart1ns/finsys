@@ -8,8 +8,9 @@ import (
 )
 
 type Config struct {
-	DBDriver string
-	DBSource string
+	DBDriver     string
+	DBSource     string
+	ServerAdress string
 }
 
 func LoadEnv() (*Config, error) {
@@ -20,9 +21,11 @@ func LoadEnv() (*Config, error) {
 
 	dbDriver := os.Getenv("DB_DRIVER")
 	dbSource := os.Getenv("DB_SOURCE")
+	serverAddress := os.Getenv("SERVER_ADDRESS")
 
 	return &Config{
-		DBDriver: dbDriver,
-		DBSource: dbSource,
+		DBDriver:     dbDriver,
+		DBSource:     dbSource,
+		ServerAdress: serverAddress,
 	}, nil
 }
