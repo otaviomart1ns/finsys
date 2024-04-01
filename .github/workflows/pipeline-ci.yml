@@ -41,8 +41,8 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "DB_DRIVER=${{ secrets.DB_DRIVER }}" > .env
-          echo "DB_SOURCE=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}?sslmode=disable" >> .env
+          echo "DB_DRIVER=${{ secrets.DB_DRIVER }}" > /home/otavio/pessoal/finsys/.env
+          echo "DB_SOURCE=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}?sslmode=disable" >> /home/otavio/pessoal/finsys/.env
 
       - name: Install golang-migrate
         run: |
