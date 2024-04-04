@@ -111,3 +111,87 @@ func (server *Server) getUserByID(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, user)
 }
+
+type getUserByEmailRequest struct {
+	Email string `uri:"email" binding:"required"`
+}
+
+func (server *Server) getUserByEmail(ctx *gin.Context) {
+	var req getUserByEmailRequest
+	err := ctx.ShouldBindUri(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+	}
+
+	user, err := server.store.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}
+
+type getUserByNameAndLastNameRequest struct {
+	Name     string `uri:"name" binding:"required"`
+	LastName string `uri:"last_name" binding:"required"`
+}
+
+func (server *Server) getUserByNameAndLastName(ctx *gin.Context) {
+	var req getUserByNameAndLastNameRequest
+	err := ctx.ShouldBindUri(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+	}
+
+	params := db.GetUserByNameAndLastNameParams{
+		Name:     req.Name,
+		LastName: req.LastName,
+	}
+
+	user, err := server.store.GetUserByNameAndLastName(ctx, params)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}
+
+type getUserByEmailAndPasswordRequest struct {
+	Email    string `uri:"email" binding:"required"`
+	Password string `uri:"password" binding:"required"`
+}
+
+func (server *Server) getUserByEmailAndPassword(ctx *gin.Context) {
+	var req getUserByEmailAndPasswordRequest
+	err := ctx.ShouldBindUri(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+	}
+
+	params := db.GetUserByEmailAndPasswordParams{
+		Email:    req.Email,
+		Password: req.Password,
+	}
+
+	user, err := server.store.GetUserByEmailAndPassword(ctx, params)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}
