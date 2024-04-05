@@ -34,8 +34,8 @@ func (server *Server) addAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, errorResponse(err))
 	}
 
-	var categoryTypeIsDifferentOfAccountType = category.Type != accountType
-	if categoryTypeIsDifferentOfAccountType {
+	var categoryTypeDiffAccountType = category.Type != accountType
+	if categoryTypeDiffAccountType {
 		ctx.JSON(http.StatusBadRequest, "Account type is different of Category type")
 	} else {
 		params := db.AddAccountParams{
