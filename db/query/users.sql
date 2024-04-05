@@ -45,42 +45,6 @@ SELECT *
 FROM users
 ORDER BY name, last_name;
 
--- name: UpdateUserByUsername :one
-UPDATE users
-SET username = $2, updated_at = NOW()
-WHERE id = $1
-RETURNING *;
-
--- name: UpdateUserByPassword :one
-UPDATE users
-SET password = $2, updated_at = NOW()
-WHERE id = $1
-RETURNING *;
-
--- name: UpdateUserByName :one
-UPDATE users
-SET name = $2, updated_at = NOW()
-WHERE id = $1
-RETURNING *;
-
--- name: UpdateUserByLastName :one
-UPDATE users
-SET last_name = $2, updated_at = NOW()
-WHERE id = $1
-RETURNING *;
-
--- name: UpdateUserByBirth :one
-UPDATE users
-SET birth = $2, updated_at = NOW()
-WHERE id = $1
-RETURNING *;
-
--- name: UpdateUserByEmail :one
-UPDATE users
-SET email = $2, updated_at = NOW()
-WHERE id = $1
-RETURNING *;
-
 -- name: UpdateUser :one
 UPDATE users
 SET 

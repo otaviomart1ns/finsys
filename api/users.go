@@ -50,6 +50,41 @@ func (server *Server) addUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
+type updateUserRequest struct {
+	ID       int32     `json:"id" binding:"required"`
+	Username string    `json:"username"`
+	Password string    `json:"password"`
+	Name     string    `json:"name"`
+	LastName string    `json:"last_name"`
+	Birth    time.Time `json:"birth"`
+	Email    string    `json:"email"`
+}
+
+func (server *Server) updateUser(ctx *gin.Context) {
+	var req updateUserRequest
+	err := ctx.ShouldBindJSON(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+	}
+
+	params := db.UpdateUserParams{
+		ID:       req.ID,
+		Username: req.Username,
+		Password: req.Password,
+		Name:     req.Name,
+		LastName: req.LastName,
+		Birth:    req.Birth,
+		Email:    req.Email,
+	}
+
+	category, err := server.store.UpdateUser(ctx, params)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	}
+
+	ctx.JSON(http.StatusOK, category)
+}
+
 func (server *Server) getUsers(ctx *gin.Context) {
 	user, err := server.store.GetUsers(ctx)
 	if err != nil {
@@ -64,28 +99,23 @@ func (server *Server) getUsers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
-type getUserByUsernameRequest struct {
-	Username string `uri:"username" binding:"required"`
+type deleteUserRequest struct {
+	ID int32 `uri:"id" binding:"required"`
 }
 
-func (server *Server) getUserByUsername(ctx *gin.Context) {
-	var req getUserByUsernameRequest
+func (server *Server) deleteUser(ctx *gin.Context) {
+	var req deleteUserRequest
 	err := ctx.ShouldBindUri(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 	}
 
-	user, err := server.store.GetUserByUsername(ctx, req.Username)
+	err = server.store.DeleteUser(ctx, req.ID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return
-		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusOK, true)
 }
 
 type getUserByIDRequest struct {
@@ -124,6 +154,30 @@ func (server *Server) getUserByEmail(ctx *gin.Context) {
 	}
 
 	user, err := server.store.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}
+
+type getUserByUsernameRequest struct {
+	Username string `uri:"username" binding:"required"`
+}
+
+func (server *Server) getUserByUsername(ctx *gin.Context) {
+	var req getUserByUsernameRequest
+	err := ctx.ShouldBindUri(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+	}
+
+	user, err := server.store.GetUserByUsername(ctx, req.Username)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
