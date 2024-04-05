@@ -236,13 +236,13 @@ func (server *Server) getAccountGraph(ctx *gin.Context) {
 		Type:   req.Type,
 	}
 
-	countGraph, err := server.store.GetAccountGraph(ctx, params)
+	accountGraph, err := server.store.GetAccountGraph(ctx, params)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, countGraph)
+	ctx.JSON(http.StatusOK, accountGraph)
 }
 
 type getAccountReportsRequest struct {
@@ -262,11 +262,11 @@ func (server *Server) getAccountReports(ctx *gin.Context) {
 		Type:   req.Type,
 	}
 
-	sumReports, err := server.store.GetAccountReports(ctx, params)
+	accountReports, err := server.store.GetAccountReports(ctx, params)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, sumReports)
+	ctx.JSON(http.StatusOK, accountReports)
 }
