@@ -32,6 +32,8 @@ func NewServer(store *db.SQLStore) *Server {
 	//router.Use(CORSConfig())
 
 	router.POST("/user", server.addUser)
+	router.PUT("/user", server.updateUser)
+	router.DELETE("/user/:id", server.deleteUser)
 	router.GET("/user", server.getUsers)
 	router.GET("/user/get-id/:id", server.getUserByID)
 	router.GET("/user/get-email/:email", server.getUserByEmail)
@@ -39,9 +41,14 @@ func NewServer(store *db.SQLStore) *Server {
 	router.GET("/user/get-name-lastname/:name/:last_name", server.getUserByNameAndLastName)
 	router.GET("/user/get-email-password/:email/:password", server.getUserByEmailAndPassword)
 
+	router.POST("/category", server.addCategory)
+	router.PUT("/category", server.updateCategory)
+	router.DELETE("/category/:id", server.deleteCategory)
+	router.GET("/category", server.getCategories)
+	router.GET("/category/get-id/:id", server.getCategoryByID)
+
 	server.router = router
 	return server
-
 }
 
 func (server *Server) Start(address string) error {
