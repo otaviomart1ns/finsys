@@ -79,22 +79,6 @@ SET
 WHERE id = $1
 RETURNING *;
 
--- name: UpdateAccountDepositInto :one
-UPDATE accounts
-SET
-  value = value + $2,
-  updated_at = NOW()
-WHERE id = $1
-RETURNING *;
-
--- name: UpdateAccountWithdrawFrom :one
-UPDATE accounts
-SET
-  value = value - $2,
-  updated_at = NOW()
-WHERE id = $1
-RETURNING *;
-
 -- name: DeleteAccount :exec
 DELETE FROM accounts
 WHERE id = $1;

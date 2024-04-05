@@ -164,44 +164,6 @@ func TestUpdateAccount(t *testing.T) {
 	require.NotEmpty(t, i.CreatedAt)
 }
 
-func TestUpdateAccountDepositInto(t *testing.T) {
-	account := addRandomAccount(t)
-	initialValue := account.Value
-	updateValue := utils.RandomAccountValue()
-	expectValue := initialValue + updateValue
-
-	params := UpdateAccountDepositIntoParams{
-		ID:    account.ID,
-		Value: updateValue,
-	}
-
-	i, err := testQueries.UpdateAccountDepositInto(context.Background(), params)
-	require.NoError(t, err)
-	require.NotEmpty(t, i)
-
-	require.Equal(t, expectValue, i.Value)
-	require.NotEmpty(t, i.CreatedAt)
-}
-
-func TestUpdateAccountWithdrawFrom(t *testing.T) {
-	account := addRandomAccount(t)
-	initialValue := account.Value
-	updateValue := utils.RandomAccountValue()
-	expectValue := initialValue - updateValue
-
-	params := UpdateAccountWithdrawFromParams{
-		ID:    account.ID,
-		Value: updateValue,
-	}
-
-	i, err := testQueries.UpdateAccountWithdrawFrom(context.Background(), params)
-	require.NoError(t, err)
-	require.NotEmpty(t, i)
-
-	require.Equal(t, expectValue, i.Value)
-	require.NotEmpty(t, i.CreatedAt)
-}
-
 func TestDeleteAccount(t *testing.T) {
 	account := addRandomAccount(t)
 

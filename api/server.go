@@ -31,21 +31,31 @@ func NewServer(store *db.SQLStore) *Server {
 	router := gin.Default()
 	//router.Use(CORSConfig())
 
-	router.POST("/user", server.addUser)
-	router.PUT("/user", server.updateUser)
-	router.DELETE("/user/:id", server.deleteUser)
-	router.GET("/user", server.getUsers)
-	router.GET("/user/get-id/:id", server.getUserByID)
-	router.GET("/user/get-email/:email", server.getUserByEmail)
-	router.GET("/user/get-username/:username", server.getUserByUsername)
-	router.GET("/user/get-name-lastname/:name/:last_name", server.getUserByNameAndLastName)
-	router.GET("/user/get-email-password/:email/:password", server.getUserByEmailAndPassword)
+	router.POST("/users", server.addUser)
+	router.PUT("/users", server.updateUser)
+	router.DELETE("/users/:id", server.deleteUser)
+	router.GET("/users", server.getUsers)
+	router.GET("/users/:id", server.getUserByID)
+	router.GET("/users/email/:email", server.getUserByEmail)
+	router.GET("/users/username/:username", server.getUserByUsername)
+	router.GET("/users/name/:name/lastname/:last_name", server.getUserByNameAndLastName)
+	router.GET("/user/email/:email/password/:password", server.getUserByEmailAndPassword)
 
-	router.POST("/category", server.addCategory)
-	router.PUT("/category", server.updateCategory)
-	router.DELETE("/category/:id", server.deleteCategory)
-	router.GET("/category", server.getCategories)
-	router.GET("/category/get-id/:id", server.getCategoryByID)
+	router.POST("/categories", server.addCategory)
+	router.PUT("/categories", server.updateCategory)
+	router.DELETE("/categories/:id", server.deleteCategory)
+	router.GET("/categories", server.getCategories) //rever rota, nao esta funcionando
+	router.GET("/categories/:id", server.getCategoryByID)
+
+	router.POST("/accounts", server.addAccount)
+	router.PUT("/accounts", server.updateAccount)
+	router.DELETE("/accounts/:id", server.deleteAccount)
+	router.GET("/accounts", server.getAccounts) //rever rota, nao esta funcionando
+	router.GET("/accounts/:id", server.getAccountByID)
+	router.GET("/user/:user_id/accounts", server.getAccountByUser)
+	router.GET("/category/:category_id/accounts", server.getAccountByCategory)
+	router.GET("/accounts/graph/:graph", server.getAccountGraph)
+	router.GET("/accounts/reports/:reports", server.getAccountReports)
 
 	server.router = router
 	return server

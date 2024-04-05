@@ -30,8 +30,6 @@ type Querier interface {
 	GetUserByUsername(ctx context.Context, username string) (User, error)
 	GetUsers(ctx context.Context) ([]User, error)
 	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error)
-	UpdateAccountDepositInto(ctx context.Context, arg UpdateAccountDepositIntoParams) (Account, error)
-	UpdateAccountWithdrawFrom(ctx context.Context, arg UpdateAccountWithdrawFromParams) (Account, error)
 	UpdateCategory(ctx context.Context, arg UpdateCategoryParams) (Category, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
