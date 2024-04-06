@@ -12,7 +12,7 @@ var (
 	firstNames   = []string{"John", "Michael", "Emily", "Sarah", "David", "Jessica", "Matthew", "Jennifer", "Christopher", "Linda", "William", "Ashley", "Daniel", "Amanda", "Robert", "Megan", "Joseph", "Melissa", "Charles", "Stephanie"}
 	lastNames    = []string{"Smith", "Johnson", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Wilson", "Anderson", "Taylor", "Thomas", "Hernandez", "Moore", "Martin", "Jackson", "Thompson", "White", "Lopez"}
 	emailDomains = []string{"gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "icloud.com", "webmail.com", "aol.com", "live.com", "comcast.net", "verizon.net"}
-	categoryType = []string{"debit"}
+	categoryType = []string{"debit", "credit"}
 	minDate      = time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC)
 	maxDate      = time.Date(2010, time.December, 31, 23, 59, 59, 0, time.UTC)
 )
