@@ -91,7 +91,7 @@ type getCategoriesRequest struct {
 
 func (server *Server) getCategories(ctx *gin.Context) {
 	var req getCategoriesRequest
-	err := ctx.ShouldBindUri(&req)
+	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
