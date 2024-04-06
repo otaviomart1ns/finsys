@@ -42,13 +42,13 @@ func NewServer(store *db.SQLStore) *Server {
 	router.POST("/categories", server.addCategory)
 	router.PUT("/categories", server.updateCategory)
 	router.DELETE("/categories/:id", server.deleteCategory)
-	router.GET("/categories", server.getCategories) //rever rota, nao esta funcionando
+	router.GET("/categories", server.getCategories)
 	router.GET("/categories/:id", server.getCategoryByID)
 
 	router.POST("/accounts", server.addAccount)
 	router.PUT("/accounts", server.updateAccount)
 	router.DELETE("/accounts/:id", server.deleteAccount)
-	router.GET("/accounts", server.getAccounts) //rever rota, nao esta funcionando
+	router.GET("/accounts", server.getAccounts)
 	router.GET("/accounts/:id", server.getAccountByID)
 	router.GET("/accounts/graph/:user_id/:type", server.getAccountGraph)
 	router.GET("/accounts/reports/:user_id/:type", server.getAccountReports)
