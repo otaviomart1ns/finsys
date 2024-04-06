@@ -36,9 +36,7 @@ func NewServer(store *db.SQLStore) *Server {
 	router.DELETE("/users/:id", server.deleteUser)
 	router.GET("/users", server.getUsers)
 	router.GET("/users/:id", server.getUserByID)
-	router.GET("/users/email/:email", server.getUserByEmail)
 	router.GET("/users/username/:username", server.getUserByUsername)
-	router.GET("/users/name/:name/lastname/:last_name", server.getUserByNameAndLastName)
 	router.GET("/user/email/:email/password/:password", server.getUserByEmailAndPassword)
 
 	router.POST("/categories", server.addCategory)
@@ -52,8 +50,6 @@ func NewServer(store *db.SQLStore) *Server {
 	router.DELETE("/accounts/:id", server.deleteAccount)
 	router.GET("/accounts", server.getAccounts) //rever rota, nao esta funcionando
 	router.GET("/accounts/:id", server.getAccountByID)
-	router.GET("/user/:user_id/accounts", server.getAccountByUser)
-	router.GET("/category/:category_id/accounts", server.getAccountByCategory)
 	router.GET("/accounts/graph/:user_id/:type", server.getAccountGraph)
 	router.GET("/accounts/reports/:user_id/:type", server.getAccountReports)
 

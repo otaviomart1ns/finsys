@@ -150,26 +150,6 @@ type getUserByEmailRequest struct {
 	Email string `uri:"email" binding:"required"`
 }
 
-func (server *Server) getUserByEmail(ctx *gin.Context) {
-	var req getUserByEmailRequest
-	err := ctx.ShouldBindUri(&req)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-	}
-
-	user, err := server.store.GetUserByEmail(ctx, req.Email)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return
-		}
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, user)
-}
-
 type getUserByUsernameRequest struct {
 	Username string `uri:"username" binding:"required"`
 }
@@ -182,36 +162,6 @@ func (server *Server) getUserByUsername(ctx *gin.Context) {
 	}
 
 	user, err := server.store.GetUserByUsername(ctx, req.Username)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return
-		}
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, user)
-}
-
-type getUserByNameAndLastNameRequest struct {
-	Name     string `uri:"name" binding:"required"`
-	LastName string `uri:"last_name" binding:"required"`
-}
-
-func (server *Server) getUserByNameAndLastName(ctx *gin.Context) {
-	var req getUserByNameAndLastNameRequest
-	err := ctx.ShouldBindUri(&req)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-	}
-
-	params := db.GetUserByNameAndLastNameParams{
-		Name:     req.Name,
-		LastName: req.LastName,
-	}
-
-	user, err := server.store.GetUserByNameAndLastName(ctx, params)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))

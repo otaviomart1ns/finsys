@@ -175,48 +175,8 @@ type getAccountByUserRequest struct {
 	UserID int32 `uri:"user_id" binding:"required"`
 }
 
-func (server *Server) getAccountByUser(ctx *gin.Context) {
-	var req getAccountByUserRequest
-	err := ctx.ShouldBindUri(&req)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-	}
-
-	account, err := server.store.GetAccountByUser(ctx, req.UserID)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return
-		}
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, account)
-}
-
 type getAccountByCategoryRequest struct {
 	CategoryID int32 `uri:"category_id" binding:"required"`
-}
-
-func (server *Server) getAccountByCategory(ctx *gin.Context) {
-	var req getAccountByCategoryRequest
-	err := ctx.ShouldBindUri(&req)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-	}
-
-	account, err := server.store.GetAccountByCategory(ctx, req.CategoryID)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return
-		}
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, account)
 }
 
 type getAccountGraphRequest struct {
