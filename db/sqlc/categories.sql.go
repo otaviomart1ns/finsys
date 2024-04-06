@@ -14,14 +14,10 @@ INSERT INTO categories (
   user_id, 
   title, 
   type, 
-  description, 
-  created_at, 
-  updated_at
-)
-VALUES (
-  $1, $2, $3, $4, NOW(), NOW()
-)
-RETURNING id, user_id, title, type, description, created_at, updated_at
+  description
+) 
+VALUES 
+  ($1, $2, $3, $4) RETURNING id, user_id, title, type, description, created_at, updated_at
 `
 
 type AddCategoryParams struct {
@@ -52,8 +48,10 @@ func (q *Queries) AddCategory(ctx context.Context, arg AddCategoryParams) (Categ
 }
 
 const deleteCategory = `-- name: DeleteCategory :exec
-DELETE FROM categories
-WHERE id = $1
+DELETE FROM 
+  categories 
+WHERE 
+  id = $1
 `
 
 func (q *Queries) DeleteCategory(ctx context.Context, id int32) error {
@@ -62,14 +60,23 @@ func (q *Queries) DeleteCategory(ctx context.Context, id int32) error {
 }
 
 const getCategories = `-- name: GetCategories :many
-SELECT id, user_id, title, type, description, created_at, updated_at 
-FROM categories
-WHERE user_id = $1
-AND type = $2
-AND
-  LOWER(title) LIKE CONCAT('%', LOWER($3::text), '%')
-AND
-  LOWER(description) LIKE CONCAT('%', LOWER($4::text), '%')
+SELECT 
+  id, user_id, title, type, description, created_at, updated_at 
+FROM 
+  categories 
+WHERE 
+  user_id = $1 
+  AND type = $2 
+  AND LOWER(title) LIKE CONCAT(
+    '%', 
+    LOWER($3 :: text), 
+    '%'
+  ) 
+  AND LOWER(description) LIKE CONCAT(
+    '%', 
+    LOWER($4 :: text), 
+    '%'
+  )
 `
 
 type GetCategoriesParams struct {
@@ -116,10 +123,14 @@ func (q *Queries) GetCategories(ctx context.Context, arg GetCategoriesParams) ([
 }
 
 const getCategoryByID = `-- name: GetCategoryByID :one
-SELECT id, user_id, title, type, description, created_at, updated_at
-FROM categories
-WHERE id = $1
-LIMIT 1
+SELECT 
+  id, user_id, title, type, description, created_at, updated_at 
+FROM 
+  categories 
+WHERE 
+  id = $1 
+LIMIT 
+  1
 `
 
 func (q *Queries) GetCategoryByID(ctx context.Context, id int32) (Category, error) {
@@ -138,13 +149,13 @@ func (q *Queries) GetCategoryByID(ctx context.Context, id int32) (Category, erro
 }
 
 const updateCategory = `-- name: UpdateCategory :one
-UPDATE categories
-SET
-  title = $2,
-  description = $3,
-  updated_at = NOW()
-WHERE id = $1
-RETURNING id, user_id, title, type, description, created_at, updated_at
+UPDATE 
+  categories 
+SET 
+  title = $2, 
+  description = $3 
+WHERE 
+  id = $1 RETURNING id, user_id, title, type, description, created_at, updated_at
 `
 
 type UpdateCategoryParams struct {

@@ -13,18 +13,16 @@ import (
 
 const addAccount = `-- name: AddAccount :one
 INSERT INTO accounts (
-  user_id,
-  category_id,
-  title,
-  type,
-  description,
-  value,
-  date,
-  created_at, 
-  updated_at
-) VALUES (
-  $1, $2, $3, $4, $5, $6, $7, NOW(), NOW()
-) RETURNING id, user_id, category_id, title, type, description, value, date, created_at, updated_at
+  user_id, 
+  category_id, 
+  title, 
+  type, 
+  description, 
+  value, 
+  date
+) 
+VALUES 
+  ($1, $2, $3, $4, $5, $6, $7) RETURNING id, user_id, category_id, title, type, description, value, date, created_at, updated_at
 `
 
 type AddAccountParams struct {
@@ -64,8 +62,10 @@ func (q *Queries) AddAccount(ctx context.Context, arg AddAccountParams) (Account
 }
 
 const deleteAccount = `-- name: DeleteAccount :exec
-DELETE FROM accounts
-WHERE id = $1
+DELETE FROM 
+  accounts 
+WHERE 
+  id = $1
 `
 
 func (q *Queries) DeleteAccount(ctx context.Context, id int32) error {
@@ -73,35 +73,15 @@ func (q *Queries) DeleteAccount(ctx context.Context, id int32) error {
 	return err
 }
 
-const getAccountByCategory = `-- name: GetAccountByCategory :one
-SELECT id, user_id, category_id, title, type, description, value, date, created_at, updated_at
-FROM accounts
-WHERE category_id = $1
-`
-
-func (q *Queries) GetAccountByCategory(ctx context.Context, categoryID int32) (Account, error) {
-	row := q.db.QueryRowContext(ctx, getAccountByCategory, categoryID)
-	var i Account
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.CategoryID,
-		&i.Title,
-		&i.Type,
-		&i.Description,
-		&i.Value,
-		&i.Date,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const getAccountByID = `-- name: GetAccountByID :one
-SELECT id, user_id, category_id, title, type, description, value, date, created_at, updated_at 
-FROM accounts
-WHERE id = $1 
-LIMIT 1
+SELECT 
+  id, user_id, category_id, title, type, description, value, date, created_at, updated_at 
+FROM 
+  accounts 
+WHERE 
+  id = $1 
+LIMIT 
+  1
 `
 
 func (q *Queries) GetAccountByID(ctx context.Context, id int32) (Account, error) {
@@ -122,35 +102,14 @@ func (q *Queries) GetAccountByID(ctx context.Context, id int32) (Account, error)
 	return i, err
 }
 
-const getAccountByUser = `-- name: GetAccountByUser :one
-SELECT id, user_id, category_id, title, type, description, value, date, created_at, updated_at
-FROM accounts
-WHERE user_id = $1
-`
-
-func (q *Queries) GetAccountByUser(ctx context.Context, userID int32) (Account, error) {
-	row := q.db.QueryRowContext(ctx, getAccountByUser, userID)
-	var i Account
-	err := row.Scan(
-		&i.ID,
-		&i.UserID,
-		&i.CategoryID,
-		&i.Title,
-		&i.Type,
-		&i.Description,
-		&i.Value,
-		&i.Date,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const getAccountGraph = `-- name: GetAccountGraph :one
-SELECT COUNT(*) 
-FROM accounts
-WHERE user_id = $1 
-AND type = $2
+SELECT 
+  COUNT(*) 
+FROM 
+  accounts 
+WHERE 
+  user_id = $1 
+  AND type = $2
 `
 
 type GetAccountGraphParams struct {
@@ -166,10 +125,13 @@ func (q *Queries) GetAccountGraph(ctx context.Context, arg GetAccountGraphParams
 }
 
 const getAccountReports = `-- name: GetAccountReports :one
-SELECT SUM(value) AS sum_value 
-FROM accounts
-WHERE user_id = $1 
-AND type = $2
+SELECT 
+  SUM(value) AS sum_value 
+FROM 
+  accounts 
+WHERE 
+  user_id = $1 
+  AND type = $2
 `
 
 type GetAccountReportsParams struct {
@@ -185,32 +147,40 @@ func (q *Queries) GetAccountReports(ctx context.Context, arg GetAccountReportsPa
 }
 
 const getAccounts = `-- name: GetAccounts :many
-SELECT
-  a.id,
-  a.user_id,
-  a.title,
-  a.type,
-  a.description,
-  a.value,
-  a.date,
-  a.created_at,
-  c.title as category_title
-FROM
-  accounts a
-LEFT JOIN
-  categories c ON c.id = a.category_id
-WHERE
-  a.user_id = $1
-AND
-  a.type = $2
-AND
-  LOWER(a.title) LIKE CONCAT('%', LOWER($3::text), '%')
-AND
-  LOWER(a.description) LIKE CONCAT('%', LOWER($4::text), '%')
-AND
-  a.category_id = COALESCE($5, a.category_id)
-AND
-  a.date = COALESCE($6, a.date)
+SELECT 
+  a.id, 
+  a.user_id, 
+  a.title, 
+  a.type, 
+  a.description, 
+  a.value, 
+  a.date, 
+  a.created_at, 
+  c.title as category_title 
+FROM 
+  accounts a 
+  LEFT JOIN categories c ON c.id = a.category_id 
+WHERE 
+  a.user_id = $1 
+  AND a.type = $2 
+  AND LOWER(a.title) LIKE CONCAT(
+    '%', 
+    LOWER($3 :: text), 
+    '%'
+  ) 
+  AND LOWER(a.description) LIKE CONCAT(
+    '%', 
+    LOWER($4 :: text), 
+    '%'
+  ) 
+  AND a.category_id = COALESCE(
+    $5, 
+    a.category_id
+  ) 
+  AND a.date = COALESCE(
+    $6, 
+    a.date
+  )
 `
 
 type GetAccountsParams struct {
@@ -275,14 +245,14 @@ func (q *Queries) GetAccounts(ctx context.Context, arg GetAccountsParams) ([]Get
 }
 
 const updateAccount = `-- name: UpdateAccount :one
-UPDATE accounts
+UPDATE 
+  accounts 
 SET 
   title = $2, 
   description = $3, 
-  value = $4,
-  updated_at = NOW()
-WHERE id = $1
-RETURNING id, user_id, category_id, title, type, description, value, date, created_at, updated_at
+  value = $4 
+WHERE 
+  id = $1 RETURNING id, user_id, category_id, title, type, description, value, date, created_at, updated_at
 `
 
 type UpdateAccountParams struct {

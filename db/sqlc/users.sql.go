@@ -12,17 +12,17 @@ import (
 
 const addUser = `-- name: AddUser :one
 INSERT INTO users (
-  username,
-  password,
-  name,
-  last_name,
-  birth,
-  email,
-  created_at,
+  username, 
+  password, 
+  name, 
+  last_name, 
+  birth, 
+  email, 
+  created_at, 
   updated_at
-) VALUES (
-  $1, $2, $3, $4, $5, $6, NOW(), NOW()
-) RETURNING id, username, password, name, last_name, birth, email, created_at, updated_at
+) 
+VALUES 
+  ($1, $2, $3, $4, $5, $6, NOW(), NOW()) RETURNING id, username, password, name, last_name, birth, email, created_at, updated_at
 `
 
 type AddUserParams struct {
@@ -59,8 +59,10 @@ func (q *Queries) AddUser(ctx context.Context, arg AddUserParams) (User, error) 
 }
 
 const deleteUser = `-- name: DeleteUser :exec
-DELETE FROM users
-WHERE id = $1
+DELETE FROM 
+  users 
+WHERE 
+  id = $1
 `
 
 func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
@@ -68,34 +70,14 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 	return err
 }
 
-const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, password, name, last_name, birth, email, created_at, updated_at
-FROM users
-WHERE email = $1
-LIMIT 1
-`
-
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Username,
-		&i.Password,
-		&i.Name,
-		&i.LastName,
-		&i.Birth,
-		&i.Email,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const getUserByEmailAndPassword = `-- name: GetUserByEmailAndPassword :one
-SELECT id, username, password, name, last_name, birth, email, created_at, updated_at
-FROM users
-WHERE email = $1 AND password = $2
+SELECT 
+  id, username, password, name, last_name, birth, email, created_at, updated_at 
+FROM 
+  users 
+WHERE 
+  email = $1 
+  AND password = $2
 `
 
 type GetUserByEmailAndPasswordParams struct {
@@ -121,10 +103,14 @@ func (q *Queries) GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEm
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, password, name, last_name, birth, email, created_at, updated_at
-FROM users
-WHERE id = $1
-LIMIT 1
+SELECT 
+  id, username, password, name, last_name, birth, email, created_at, updated_at 
+FROM 
+  users 
+WHERE 
+  id = $1 
+LIMIT 
+  1
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
@@ -144,39 +130,15 @@ func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
 	return i, err
 }
 
-const getUserByNameAndLastName = `-- name: GetUserByNameAndLastName :one
-SELECT id, username, password, name, last_name, birth, email, created_at, updated_at
-FROM users
-WHERE name = $1 AND last_name = $2
-`
-
-type GetUserByNameAndLastNameParams struct {
-	Name     string `json:"name"`
-	LastName string `json:"last_name"`
-}
-
-func (q *Queries) GetUserByNameAndLastName(ctx context.Context, arg GetUserByNameAndLastNameParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByNameAndLastName, arg.Name, arg.LastName)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Username,
-		&i.Password,
-		&i.Name,
-		&i.LastName,
-		&i.Birth,
-		&i.Email,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, password, name, last_name, birth, email, created_at, updated_at
-FROM users
-WHERE username = $1
-LIMIT 1
+SELECT 
+  id, username, password, name, last_name, birth, email, created_at, updated_at 
+FROM 
+  users 
+WHERE 
+  username = $1 
+LIMIT 
+  1
 `
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
@@ -197,9 +159,13 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User,
 }
 
 const getUsers = `-- name: GetUsers :many
-SELECT id, username, password, name, last_name, birth, email, created_at, updated_at
-FROM users
-ORDER BY name, last_name
+SELECT 
+  id, username, password, name, last_name, birth, email, created_at, updated_at 
+FROM 
+  users 
+ORDER BY 
+  name, 
+  last_name
 `
 
 func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
@@ -236,7 +202,8 @@ func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
 }
 
 const updateUser = `-- name: UpdateUser :one
-UPDATE users
+UPDATE 
+  users 
 SET 
   username = $2, 
   password = $3, 
@@ -244,9 +211,9 @@ SET
   last_name = $5, 
   birth = $6, 
   email = $7, 
-  updated_at = NOW()
-WHERE id = $1
-RETURNING id, username, password, name, last_name, birth, email, created_at, updated_at
+  updated_at = NOW() 
+WHERE 
+  id = $1 RETURNING id, username, password, name, last_name, birth, email, created_at, updated_at
 `
 
 type UpdateUserParams struct {
