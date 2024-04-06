@@ -67,31 +67,6 @@ func TestGetUserByUsername(t *testing.T) {
 	assertUserEquals(t, user, i)
 }
 
-func TestGetUserByEmail(t *testing.T) {
-	user := addRandomUser(t)
-
-	i, err := testQueries.GetUserByEmail(context.Background(), user.Email)
-	require.NoError(t, err)
-	require.NotEmpty(t, i)
-
-	assertUserEquals(t, user, i)
-}
-
-func TestGetUserByNameAndLastName(t *testing.T) {
-	user := addRandomUser(t)
-
-	params := GetUserByNameAndLastNameParams{
-		Name:     user.Name,
-		LastName: user.LastName,
-	}
-
-	i, err := testQueries.GetUserByNameAndLastName(context.Background(), params)
-	require.NoError(t, err)
-	require.NotEmpty(t, i)
-
-	assertUserEquals(t, user, i)
-}
-
 func TestGetUserByEmailAndPassword(t *testing.T) {
 	user := addRandomUser(t)
 

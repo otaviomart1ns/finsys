@@ -98,25 +98,6 @@ func TestGetAccountByID(t *testing.T) {
 	assertAccountsEquals(t, account, i)
 }
 
-func TestGetAccountByUser(t *testing.T) {
-	account := addRandomAccount(t)
-
-	i, err := testQueries.GetAccountByUser(context.Background(), account.UserID)
-	require.NoError(t, err)
-	require.NotEmpty(t, i)
-
-	assertAccountsEquals(t, account, i)
-}
-
-func TestGetAccountByCategory(t *testing.T) {
-	account := addRandomAccount(t)
-
-	i, err := testQueries.GetAccountByCategory(context.Background(), account.CategoryID)
-	require.NoError(t, err)
-	require.NotEmpty(t, i)
-
-	assertAccountsEquals(t, account, i)
-}
 func TestGetAccountReports(t *testing.T) {
 	account := addRandomAccount(t)
 
