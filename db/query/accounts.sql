@@ -6,10 +6,12 @@ INSERT INTO accounts (
   type, 
   description, 
   value, 
-  date
+  date,
+  created_at, 
+  updated_at
 ) 
 VALUES 
-  ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
+  ($1, $2, $3, $4, $5, $6, $7,NOW(), NOW()) RETURNING *;
 
 -- name: GetAccountByID :one
 SELECT 
@@ -81,7 +83,8 @@ UPDATE
 SET 
   title = $2, 
   description = $3, 
-  value = $4 
+  value = $4,
+  updated_at = NOW()  
 WHERE 
   id = $1 RETURNING *;
 

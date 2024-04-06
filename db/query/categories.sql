@@ -3,10 +3,12 @@ INSERT INTO categories (
   user_id, 
   title, 
   type, 
-  description
+  description,
+  created_at, 
+  updated_at
 ) 
 VALUES 
-  ($1, $2, $3, $4) RETURNING *;
+  ($1, $2, $3, $4, NOW(), NOW()) RETURNING *;
 
 -- name: GetCategoryByID :one
 SELECT 
@@ -42,7 +44,8 @@ UPDATE
   categories 
 SET 
   title = $2, 
-  description = $3 
+  description = $3, 
+  updated_at = NOW() 
 WHERE 
   id = $1 RETURNING *;
 
