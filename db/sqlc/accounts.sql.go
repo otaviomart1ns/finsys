@@ -19,10 +19,12 @@ INSERT INTO accounts (
   type, 
   description, 
   value, 
-  date
+  date,
+  created_at, 
+  updated_at
 ) 
 VALUES 
-  ($1, $2, $3, $4, $5, $6, $7) RETURNING id, user_id, category_id, title, type, description, value, date, created_at, updated_at
+  ($1, $2, $3, $4, $5, $6, $7,NOW(), NOW()) RETURNING id, user_id, category_id, title, type, description, value, date, created_at, updated_at
 `
 
 type AddAccountParams struct {
@@ -250,7 +252,8 @@ UPDATE
 SET 
   title = $2, 
   description = $3, 
-  value = $4 
+  value = $4,
+  updated_at = NOW()  
 WHERE 
   id = $1 RETURNING id, user_id, category_id, title, type, description, value, date, created_at, updated_at
 `
