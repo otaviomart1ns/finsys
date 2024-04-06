@@ -171,14 +171,6 @@ func (server *Server) getAccountByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, account)
 }
 
-type getAccountByUserRequest struct {
-	UserID int32 `uri:"user_id" binding:"required"`
-}
-
-type getAccountByCategoryRequest struct {
-	CategoryID int32 `uri:"category_id" binding:"required"`
-}
-
 type getAccountGraphRequest struct {
 	UserID int32  `uri:"user_id" binding:"required"`
 	Type   string `uri:"type" binding:"required"`

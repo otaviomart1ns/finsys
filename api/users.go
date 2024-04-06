@@ -146,10 +146,6 @@ func (server *Server) getUserByID(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, user)
 }
 
-type getUserByEmailRequest struct {
-	Email string `uri:"email" binding:"required"`
-}
-
 type getUserByUsernameRequest struct {
 	Username string `uri:"username" binding:"required"`
 }
