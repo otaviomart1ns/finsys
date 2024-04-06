@@ -11,7 +11,7 @@ migrationdown:
 	migrate -path db/migration -database "postgresql://postgres:pgpwd2024@localhost:5432/finsys?sslmode=disable" -verbose down
 
 sqlc:
-	docker run --rm -v $(pwd):/src -w /src kjconroy/sqlc generate
+	docker run --rm -v $$(pwd):/src -w /src kjconroy/sqlc generate
 
 test:
 	go test -v -cover ./...
