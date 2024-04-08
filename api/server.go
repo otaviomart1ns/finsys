@@ -53,6 +53,8 @@ func NewServer(store *db.SQLStore) *Server {
 	router.GET("/accounts/graph/:user_id/:type", server.getAccountGraph)
 	router.GET("/accounts/reports/:user_id/:type", server.getAccountReports)
 
+	router.POST("/login", server.login)
+
 	server.router = router
 	return server
 }
