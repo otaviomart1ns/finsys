@@ -205,13 +205,13 @@ const updateUser = `-- name: UpdateUser :one
 UPDATE 
   users 
 SET 
-  username = $2, 
-  password = $3, 
-  name = $4, 
-  last_name = $5, 
-  birth = $6, 
-  email = $7, 
-  updated_at = NOW() 
+  username = COALESCE($2, username),
+  password = COALESCE($3, password),
+  name = COALESCE($4, name),
+  last_name = COALESCE($5, last_name),
+  birth = COALESCE($6, birth),
+  email = COALESCE($7, email),
+  updated_at = NOW()
 WHERE 
   id = $1 RETURNING id, username, password, name, last_name, birth, email, created_at, updated_at
 `
