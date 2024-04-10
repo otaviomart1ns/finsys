@@ -56,13 +56,14 @@ func (server *Server) addUser(ctx *gin.Context) {
 }
 
 type updateUserRequest struct {
-	ID       int32     `json:"id" binding:"required"`
-	Username string    `json:"username"`
-	Password string    `json:"password"`
-	Name     string    `json:"name"`
-	LastName string    `json:"last_name"`
-	Birth    time.Time `json:"birth"`
-	Email    string    `json:"email"`
+	ID          int32     `json:"id" binding:"required"`
+	Username    string    `json:"username"`
+	OldPassword string    `json:"old_password"`
+	Password    string    `json:"password"`
+	Name        string    `json:"name"`
+	LastName    string    `json:"last_name"`
+	Birth       time.Time `json:"birth"`
+	Email       string    `json:"email"`
 }
 
 func (server *Server) updateUser(ctx *gin.Context) {
@@ -77,22 +78,55 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 	}
 
-	params := db.UpdateUserParams{
-		ID:       req.ID,
-		Username: req.Username,
-		Password: req.Password,
-		Name:     req.Name,
-		LastName: req.LastName,
-		Birth:    req.Birth,
-		Email:    req.Email,
-	}
-
-	category, err := server.store.UpdateUser(ctx, params)
+	user, err := server.store.GetUserByID(ctx, req.ID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
 	}
 
-	ctx.JSON(http.StatusOK, category)
+	var passwordHash string = user.Password
+
+	if req.Password != "" {
+		hashedOldInput := sha512.Sum512_256([]byte(req.OldPassword))
+		trimmedOldHash := bytes.Trim(hashedOldInput[:], "\x00")
+		preparedOldPassword := string(trimmedOldHash)
+
+		if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(preparedOldPassword)); err != nil {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Current password does not match"})
+			return
+		}
+
+		hashedInput := sha512.Sum512_256([]byte(req.Password))
+		trimmedHash := bytes.Trim(hashedInput[:], "\x00")
+		preparedPassword := string(trimmedHash)
+
+		passwordHashInBytes, err := bcrypt.GenerateFromPassword([]byte(preparedPassword), bcrypt.DefaultCost)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		passwordHash = string(passwordHashInBytes)
+	} else {
+		passwordHash = user.Password
+	}
+
+	params := db.UpdateUserParams{
+		ID:       req.ID,
+		Username: utils.Coalesce(req.Username, user.Username),
+		Password: passwordHash,
+		Name:     utils.Coalesce(req.Name, user.Name),
+		LastName: utils.Coalesce(req.LastName, user.LastName),
+		Birth:    utils.CoalesceTime(req.Birth, user.Birth),
+		Email:    utils.Coalesce(req.Email, user.Email),
+	}
+
+	updateUser, err := server.store.UpdateUser(ctx, params)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, updateUser)
 }
 
 func (server *Server) getUsers(ctx *gin.Context) {
