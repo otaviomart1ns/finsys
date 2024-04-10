@@ -10,7 +10,7 @@ type Server struct {
 	router *gin.Engine
 }
 
-/* func CORSConfig() gin.HandlerFunc {
+func CORSConfig() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		context.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		context.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -24,12 +24,12 @@ type Server struct {
 
 		context.Next()
 	}
-} */
+}
 
 func NewServer(store *db.SQLStore) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
-	//router.Use(CORSConfig())
+	router.Use(CORSConfig())
 
 	router.POST("/users", server.addUser)
 	router.PUT("/users", server.updateUser)
