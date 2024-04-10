@@ -70,38 +70,6 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 	return err
 }
 
-const getUserByEmailAndPassword = `-- name: GetUserByEmailAndPassword :one
-SELECT 
-  id, username, password, name, last_name, birth, email, created_at, updated_at 
-FROM 
-  users 
-WHERE 
-  email = $1 
-  AND password = $2
-`
-
-type GetUserByEmailAndPasswordParams struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-func (q *Queries) GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEmailAndPasswordParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByEmailAndPassword, arg.Email, arg.Password)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Username,
-		&i.Password,
-		&i.Name,
-		&i.LastName,
-		&i.Birth,
-		&i.Email,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-	)
-	return i, err
-}
-
 const getUserByID = `-- name: GetUserByID :one
 SELECT 
   id, username, password, name, last_name, birth, email, created_at, updated_at 
