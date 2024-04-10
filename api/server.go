@@ -37,7 +37,6 @@ func NewServer(store *db.SQLStore) *Server {
 	router.GET("/users", server.getUsers)
 	router.GET("/users/:id", server.getUserByID)
 	router.GET("/users/username/:username", server.getUserByUsername)
-	router.GET("/user/email/:email/password/:password", server.getUserByEmailAndPassword)
 
 	router.POST("/categories", server.addCategory)
 	router.PUT("/categories", server.updateCategory)
