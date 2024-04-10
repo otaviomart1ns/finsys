@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	db "github.com/otaviomart1ns/finsys/db/sqlc"
+	"github.com/otaviomart1ns/finsys/utils"
 )
 
 type addCategoryRequest struct {
@@ -15,6 +16,11 @@ type addCategoryRequest struct {
 }
 
 func (server *Server) addCategory(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req addCategoryRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
@@ -43,6 +49,11 @@ type updateCategoryRequest struct {
 }
 
 func (server *Server) updateCategory(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req updateCategoryRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
@@ -68,6 +79,11 @@ type deleteCategoryRequest struct {
 }
 
 func (server *Server) deleteCategory(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req deleteCategoryRequest
 	err := ctx.ShouldBindUri(&req)
 	if err != nil {
@@ -90,6 +106,11 @@ type getCategoriesRequest struct {
 }
 
 func (server *Server) getCategories(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req getCategoriesRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
@@ -117,6 +138,11 @@ type getCategoryByIDRequest struct {
 }
 
 func (server *Server) getCategoryByID(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req getCategoryByIDRequest
 	err := ctx.ShouldBindUri(&req)
 	if err != nil {

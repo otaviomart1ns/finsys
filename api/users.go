@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	db "github.com/otaviomart1ns/finsys/db/sqlc"
+	"github.com/otaviomart1ns/finsys/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -65,6 +66,11 @@ type updateUserRequest struct {
 }
 
 func (server *Server) updateUser(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req updateUserRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
@@ -158,36 +164,6 @@ func (server *Server) getUserByUsername(ctx *gin.Context) {
 	}
 
 	user, err := server.store.GetUserByUsername(ctx, req.Username)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return
-		}
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, user)
-}
-
-type getUserByEmailAndPasswordRequest struct {
-	Email    string `uri:"email" binding:"required"`
-	Password string `uri:"password" binding:"required"`
-}
-
-func (server *Server) getUserByEmailAndPassword(ctx *gin.Context) {
-	var req getUserByEmailAndPasswordRequest
-	err := ctx.ShouldBindUri(&req)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-	}
-
-	params := db.GetUserByEmailAndPasswordParams{
-		Email:    req.Email,
-		Password: req.Password,
-	}
-
-	user, err := server.store.GetUserByEmailAndPassword(ctx, params)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))

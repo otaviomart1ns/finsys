@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	db "github.com/otaviomart1ns/finsys/db/sqlc"
+	"github.com/otaviomart1ns/finsys/utils"
 )
 
 type addAccountRequest struct {
@@ -20,6 +21,11 @@ type addAccountRequest struct {
 }
 
 func (server *Server) addAccount(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req addAccountRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
@@ -65,6 +71,11 @@ type updateAccountRequest struct {
 }
 
 func (server *Server) updateAccount(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req updateAccountRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
@@ -91,6 +102,11 @@ type deleteAccountRequest struct {
 }
 
 func (server *Server) deleteAccount(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req deleteAccountRequest
 	err := ctx.ShouldBindUri(&req)
 	if err != nil {
@@ -116,6 +132,11 @@ type getAccountsRequest struct {
 }
 
 func (server *Server) getAccounts(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req getAccountsRequest
 	err := ctx.ShouldBindJSON(&req)
 	if err != nil {
@@ -152,6 +173,11 @@ type getAccountByIDRequest struct {
 }
 
 func (server *Server) getAccountByID(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req getAccountByIDRequest
 	err := ctx.ShouldBindUri(&req)
 	if err != nil {
@@ -177,6 +203,11 @@ type getAccountGraphRequest struct {
 }
 
 func (server *Server) getAccountGraph(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req getAccountGraphRequest
 	err := ctx.ShouldBindUri(&req)
 	if err != nil {
@@ -203,6 +234,11 @@ type getAccountReportsRequest struct {
 }
 
 func (server *Server) getAccountReports(ctx *gin.Context) {
+	errValiteToken := utils.GetTokenAndVerify(ctx)
+	if errValiteToken != nil {
+		return
+	}
+
 	var req getAccountReportsRequest
 	err := ctx.ShouldBindUri(&req)
 	if err != nil {
