@@ -1,10 +1,14 @@
 package utils
 
 import (
+	"bytes"
+	"crypto/sha512"
 	"fmt"
 	"math/rand"
 	"strings"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -61,4 +65,16 @@ func RandomCategoryType() string {
 func RandomAccountValue() int32 {
 	value := rand.Intn(100)
 	return int32(value)
+}
+
+func HashPassword(password string) (string, error) {
+	hashedInput := sha512.Sum512_256([]byte(password))
+	trimmedHash := bytes.Trim(hashedInput[:], "\x00")
+	preparedPassword := string(trimmedHash)
+	passwordHashInBytes, err := bcrypt.GenerateFromPassword([]byte(preparedPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+
+	return string(passwordHashInBytes), nil
 }

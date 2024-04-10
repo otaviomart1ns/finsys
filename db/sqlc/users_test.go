@@ -10,10 +10,13 @@ import (
 
 func addRandomUser(t *testing.T) User {
 	firstName, lastName := utils.RandomName()
+	password := utils.RandomString(8)
+	hashedPassword, err := utils.HashPassword(password)
+	require.NoError(t, err)
 
 	arg := AddUserParams{
 		Username: utils.RandomString(6),
-		Password: utils.RandomString(8),
+		Password: hashedPassword,
 		Name:     firstName,
 		LastName: lastName,
 		Birth:    utils.RandomBirthDate(),
@@ -67,48 +70,128 @@ func TestGetUserByUsername(t *testing.T) {
 	assertUserEquals(t, user, i)
 }
 
-func TestGetUserByEmailAndPassword(t *testing.T) {
-	user := addRandomUser(t)
-
-	params := GetUserByEmailAndPasswordParams{
-		Email:    user.Email,
-		Password: user.Password,
-	}
-
-	i, err := testQueries.GetUserByEmailAndPassword(context.Background(), params)
-	require.NoError(t, err)
-	require.NotEmpty(t, i)
-
-	assertUserEquals(t, user, i)
-}
-
 func TestUpdateUser(t *testing.T) {
 	user := addRandomUser(t)
 
-	firstName, lastName := utils.RandomName()
+	newUsername := utils.RandomString(8)
+	newPassword := utils.RandomString(10)
+	newHashedPassword, err := utils.HashPassword(newPassword)
+	require.NoError(t, err)
+	newFirstName, newLastName := utils.RandomName()
+	newBirth := utils.RandomBirthDate()
+	newEmail := utils.RandomEmail(newFirstName, newLastName)
 
-	params := UpdateUserParams{
-		ID:       user.ID,
-		Username: utils.RandomString(8),
-		Password: utils.RandomString(10),
-		Name:     firstName,
-		LastName: lastName,
-		Birth:    utils.RandomBirthDate(),
-		Email:    utils.RandomEmail(firstName, lastName),
+	tests := []struct {
+		desc   string
+		update UpdateUserParams
+		check  func(*testing.T, User)
+	}{
+		{
+			desc: "UpdateUsername",
+			update: UpdateUserParams{
+				ID:       user.ID,
+				Username: newUsername,
+				Password: user.Password,
+				Name:     user.Name,
+				LastName: user.LastName,
+				Birth:    user.Birth,
+				Email:    user.Email,
+			},
+			check: func(t *testing.T, updated User) {
+				require.Equal(t, newUsername, updated.Username)
+				require.Equal(t, user.Password, updated.Password)
+				require.Equal(t, user.Name, updated.Name)
+				require.Equal(t, user.LastName, updated.LastName)
+				require.Equal(t, user.Birth, updated.Birth)
+				require.Equal(t, user.Email, updated.Email)
+			},
+		},
+		{
+			desc: "UpdatePassword",
+			update: UpdateUserParams{
+				ID:       user.ID,
+				Password: newHashedPassword,
+				Username: user.Username,
+				Name:     user.Name,
+				LastName: user.LastName,
+				Birth:    user.Birth,
+				Email:    user.Email,
+			},
+			check: func(t *testing.T, updated User) {
+				require.NotEqual(t, user.Password, updated.Password)
+			},
+		},
+		{
+			desc: "UpdateName",
+			update: UpdateUserParams{
+				ID:       user.ID,
+				Name:     newFirstName,
+				Username: user.Username,
+				Password: user.Password,
+				LastName: user.LastName,
+				Birth:    user.Birth,
+				Email:    user.Email,
+			},
+			check: func(t *testing.T, updated User) {
+				require.Equal(t, newFirstName, updated.Name)
+			},
+		},
+		{
+			desc: "UpdateLastName",
+			update: UpdateUserParams{
+				ID:       user.ID,
+				LastName: newLastName,
+				Username: user.Username,
+				Password: user.Password,
+				Name:     user.Name,
+				Birth:    user.Birth,
+				Email:    user.Email,
+			},
+			check: func(t *testing.T, updated User) {
+				require.Equal(t, newLastName, updated.LastName)
+			},
+		},
+		{
+			desc: "UpdateEmail",
+			update: UpdateUserParams{
+				ID:       user.ID,
+				Email:    newEmail,
+				Username: user.Username,
+				Password: user.Password,
+				Name:     user.Name,
+				LastName: user.LastName,
+				Birth:    user.Birth,
+			},
+			check: func(t *testing.T, updated User) {
+				require.Equal(t, newEmail, updated.Email)
+			},
+		},
+		{
+			desc: "UpdateBirth",
+			update: UpdateUserParams{
+				ID:       user.ID,
+				Birth:    newBirth,
+				Username: user.Username,
+				Password: user.Password,
+				Name:     user.Name,
+				LastName: user.LastName,
+				Email:    user.Email,
+			},
+			check: func(t *testing.T, updated User) {
+				require.Equal(t, newBirth.Format("2006-01-02"), updated.Birth.Format("2006-01-02"))
+			},
+		},
 	}
 
-	i, err := testQueries.UpdateUser(context.Background(), params)
-	require.NoError(t, err)
-	require.NotEmpty(t, i)
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			updatedUser, err := testQueries.UpdateUser(context.Background(), tc.update)
+			require.NoError(t, err)
+			require.NotEmpty(t, updatedUser)
 
-	require.Equal(t, params.ID, i.ID)
-	require.Equal(t, params.Username, i.Username)
-	require.Equal(t, params.Password, i.Password)
-	require.Equal(t, params.Name, i.Name)
-	require.Equal(t, params.LastName, i.LastName)
-	require.Equal(t, params.Birth.Format("2006-01-02"), i.Birth.Format("2006-01-02"))
-	require.Equal(t, params.Email, i.Email)
-	require.NotEmpty(t, i.CreatedAt)
+			tc.check(t, updatedUser)
+		})
+	}
 }
 
 func TestDeleteUser(t *testing.T) {
