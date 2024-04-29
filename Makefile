@@ -1,22 +1,33 @@
-postgresql:
-	docker run --name db_finsys -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=pgpwd2024 -d -p 5432:5432 -v postgres_data:/var/lib/postgresql/data postgres:latest
-
-createdb:
-	docker exec -it db_finsys createdb --username=postgres --owner=postgres finsys
-
 migrationup:
-	migrate -path db/migration -database "postgresql://postgres:pgpwd2024@localhost:5432/finsys?sslmode=disable" -verbose up
+	migrate -path common/db/migration -database "postgresql://postgres:pgpwd2024@db-finsys.cj6goom8aq3j.us-east-1.rds.amazonaws.com:5432/finsys" -verbose up
 
 migrationdown:
-	migrate -path db/migration -database "postgresql://postgres:pgpwd2024@localhost:5432/finsys?sslmode=disable" -verbose down
+	migrate -path common/db/migration -database "postgresql://postgres:pgpwd2024@db-finsys.cj6goom8aq3j.us-east-1.rds.amazonaws.com:5432/finsys" -verbose down
 
-sqlc:
-	docker run --rm -v $$(pwd):/src -w /src kjconroy/sqlc generate
+build-accounts:
+	GOARCH=amd64 GOOS=linux go build -o bootstrap ./accounts
+	mv bootstrap ./accounts
 
-test:
-	go test -v -cover ./...
+build-categories:
+	GOARCH=amd64 GOOS=linux go build -o bootstrap ./categories
+	mv bootstrap ./categories
 
-server:
-	go run main.go
+build-login:
+	GOARCH=amd64 GOOS=linux go build -o bootstrap ./login
+	mv bootstrap ./login
+	
+build-users:
+	GOARCH=amd64 GOOS=linux go build -o bootstrap ./users
+	mv bootstrap ./users
 
-.PHONY: postgresql createdb migrationup migrationdown sqlc test server
+run-local:
+	sam local start-api
+deploy-aws:
+	sam build --profile otavio
+	sam deploy --profile otavio
+
+drop-stack:
+	aws cloudformation delete-stack --stack-name finsys
+
+
+.PHONY: migrationup migrationdown build-accounts build-categories build-login build-users run-local deploy-aws drop-stack
