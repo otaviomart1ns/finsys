@@ -1,0 +1,9 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "finsys"
+resolve_s3 = true
+s3_prefix = "finsys"
+region = "us-east-1"
+profile = "otavio"
+capabilities = "CAPABILITY_IAM"
+image_repositories = ["UsersFunction=905418146584.dkr.ecr.us-east-1.amazonaws.com/finsys917e0282/usersfunctiond9d734f6repo", "LoginFunction=905418146584.dkr.ecr.us-east-1.amazonaws.com/finsys917e0282/loginfunctiondcf74f1drepo", "CategoriesFunction=905418146584.dkr.ecr.us-east-1.amazonaws.com/finsys917e0282/categoriesfunction65a529bfrepo", "AccountsFunction=905418146584.dkr.ecr.us-east-1.amazonaws.com/finsys917e0282/accountsfunction72b0cccarepo"]
