@@ -1,0 +1,194 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  API Serverless FinSys - DEPLOY AWS
+
+Globals:
+  Function:
+    Timeout: 15
+    MemorySize: 512
+    Environment:
+      Variables:
+        DB_DRIVER: postgres
+        DB_SOURCE: postgresql://postgres:pgpwd2024@db-finsys.cj6goom8aq3j.us-east-1.rds.amazonaws.com:5432/finsys
+
+Resources:
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: LoginFunction
+      PackageType: Image
+      Architectures:
+        - x86_64
+      Events:
+        Login:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: POST
+    Metadata:
+      DockerTag: provided.al2023-v1
+      DockerContext: ./
+      Dockerfile: Dockerfile.login
+
+  UsersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: UsersFunction
+      PackageType: Image
+      Architectures:
+        - x86_64
+      Events:
+        AddUser:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: POST
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: PUT
+        DeleteUser:
+          Type: Api
+          Properties:
+            Path: /users/{id}
+            Method: DELETE
+        GetUsers:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: GET
+        GetUserByID:
+          Type: Api
+          Properties:
+            Path: /users/{id}
+            Method: GET
+        GetUserByUsername:
+          Type: Api
+          Properties:
+            Path: /users/username/{username}
+            Method: GET
+    Metadata:
+      DockerTag: provided.al2023-v1
+      DockerContext: ./
+      Dockerfile: Dockerfile.users
+
+  CategoriesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: CategoriesFunction
+      PackageType: Image
+      Architectures:
+        - x86_64
+      Events:
+        AddCategory:
+          Type: Api
+          Properties:
+            Path: /categories
+            Method: POST
+        UpdateCategory:
+          Type: Api
+          Properties:
+            Path: /categories
+            Method: PUT
+        DeleteCategory:
+          Type: Api
+          Properties:
+            Path: /categories/{id}
+            Method: DELETE
+        GetCategories:
+          Type: Api
+          Properties:
+            Path: /categories
+            Method: GET
+        GetCategoryByID:
+          Type: Api
+          Properties:
+            Path: /categories/{id}
+            Method: GET
+    Metadata:
+      DockerTag: provided.al2023-v1
+      DockerContext: ./
+      Dockerfile: Dockerfile.categories
+
+  AccountsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: AccountsFunction
+      PackageType: Image
+      Architectures:
+        - x86_64
+      Events:
+        AddAccount:
+          Type: Api
+          Properties:
+            Path: /accounts
+            Method: POST
+        UpdateAccount:
+          Type: Api
+          Properties:
+            Path: /accounts
+            Method: PUT
+        DeleteAccount:
+          Type: Api
+          Properties:
+            Path: /accounts/{id}
+            Method: DELETE
+        GetAccounts:
+          Type: Api
+          Properties:
+            Path: /accounts
+            Method: GET
+        GetAccountByID:
+          Type: Api
+          Properties:
+            Path: /accounts/{id}
+            Method: GET
+        GetAccountGraph:
+          Type: Api
+          Properties:
+            Path: /accounts/graph/{user_id}/{type}
+            Method: GET
+        GetAccountReports:
+          Type: Api
+          Properties:
+            Path: /accounts/reports/{user_id}/{type}
+            Method: GET
+    Metadata:
+      DockerTag: provided.al2023-v1
+      DockerContext: ./
+      Dockerfile: Dockerfile.accounts
+
+Outputs:
+  APIFinSys:
+    Description: API Gateway endpoint URL for Prod
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/"
+
+  LoginFunction:
+    Description: Login Lambda Function ARN
+    Value: !GetAtt LoginFunction.Arn
+  LoginFunctionIamRole:
+    Description: Implicit IAM Role created function
+    Value: !GetAtt LoginFunctionRole.Arn
+
+  UsersFunction:
+    Description: Users Lambda Function ARN
+    Value: !GetAtt UsersFunction.Arn
+  UsersFunctionIamRole:
+    Description: Implicit IAM Role created function
+    Value: !GetAtt UsersFunctionRole.Arn
+
+  CategoriesFunction:
+    Description: Categories Lambda Function ARN
+    Value: !GetAtt CategoriesFunction.Arn
+  CategoriesFunctionIamRole:
+    Description: Implicit IAM Role created function
+    Value: !GetAtt CategoriesFunctionRole.Arn
+
+  AccountsFunction:
+    Description: Accounts Lambda Function ARN
+    Value: !GetAtt AccountsFunction.Arn
+  AccountsFunctionIamRole:
+    Description: Implicit IAM Role created function
+    Value: !GetAtt AccountsFunctionRole.Arn
