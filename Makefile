@@ -1,8 +1,8 @@
 migrationup:
-	migrate -path common/db/migration -database "postgresql://postgres:pgpwd2024@db-finsys.cj6goom8aq3j.us-east-1.rds.amazonaws.com:5432/finsys" -verbose up
+	migrate -path common/db/migration -database "postgresql://postgres:pgpwd2024@finsys.cj6goom8aq3j.us-east-1.rds.amazonaws.com:5432/finsys" -verbose up
 
 migrationdown:
-	migrate -path common/db/migration -database "postgresql://postgres:pgpwd2024@db-finsys.cj6goom8aq3j.us-east-1.rds.amazonaws.com:5432/finsys" -verbose down
+	migrate -path common/db/migration -database "postgresql://postgres:pgpwd2024@finsys.cj6goom8aq3j.us-east-1.rds.amazonaws.com:5432/finsys" -verbose down
 
 build:
 	sam build --profile otavio
