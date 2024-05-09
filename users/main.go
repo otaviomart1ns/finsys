@@ -21,7 +21,7 @@ type addUserRequest struct {
 	Password string    `json:"password" binding:"required"`
 	Name     string    `json:"name" binding:"required"`
 	LastName string    `json:"last_name" binding:"required"`
-	Birth    time.Time `json:"birth" binding:"required"`
+	Birth    time.Time `json:"date" binding:"required"`
 	Email    string    `json:"email" binding:"required"`
 }
 
