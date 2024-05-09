@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -98,30 +99,28 @@ func DeleteCategory(ctx context.Context, request events.APIGatewayProxyRequest) 
 	return utils.Response(http.StatusOK, message)
 }
 
-type getCategoriesRequest struct {
-	UserID      int32  `form:"user_id" json:"user_id" binding:"required"`
-	Type        string `form:"type" json:"type" binding:"required"`
-	Title       string `form:"title" json:"title"`
-	Description string `form:"description" json:"description"`
-}
-
 func GetCategories(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	log.Printf("Received query parameters: %v", request.QueryStringParameters)
+
 	_, err := utils.GetTokenAndVerify(request)
 	if err != nil {
 		return utils.ErrorResponse(http.StatusUnauthorized, err), nil
 	}
 
-	var req getCategoriesRequest
-	err = json.Unmarshal([]byte(request.Body), &req)
+	reqUserID, err := strconv.Atoi(request.QueryStringParameters["user_id"])
 	if err != nil {
-		return utils.ErrorResponse(http.StatusBadRequest, err), nil
+		return utils.ErrorResponse(http.StatusBadRequest, fmt.Errorf("invalid user ID: %v", err)), nil
 	}
 
+	reqType := request.QueryStringParameters["type"]
+	reqTitle := request.QueryStringParameters["title"]
+	reqDescription := request.QueryStringParameters["description"]
+
 	params := commonDB.GetCategoriesParams{
-		UserID:      req.UserID,
-		Type:        req.Type,
-		Title:       req.Title,
-		Description: req.Description,
+		UserID:      int32(reqUserID),
+		Type:        reqType,
+		Title:       reqTitle,
+		Description: reqDescription,
 	}
 
 	categories, err := store.GetCategories(ctx, params)

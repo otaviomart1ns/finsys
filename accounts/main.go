@@ -122,39 +122,40 @@ func DeleteAccount(ctx context.Context, request events.APIGatewayProxyRequest) (
 	return utils.Response(http.StatusOK, message)
 }
 
-type getAccountsRequest struct {
-	UserID      int32     `form:"user_id" json:"user_id" binding:"required"`
-	Type        string    `form:"type" json:"type" binding:"required"`
-	Title       string    `form:"title" json:"title"`
-	Description string    `form:"description" json:"description"`
-	CategoryID  int32     `form:"category_id" json:"category_id"`
-	Date        time.Time `form:"date" json:"date"`
-}
-
 func GetAccounts(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	_, err := utils.GetTokenAndVerify(request)
 	if err != nil {
 		return utils.ErrorResponse(http.StatusUnauthorized, err), nil
 	}
 
-	var req getAccountsRequest
-	err = json.Unmarshal([]byte(request.Body), &req)
+	reqUserID, err := strconv.Atoi(request.QueryStringParameters["user_id"])
 	if err != nil {
-		return utils.ErrorResponse(http.StatusBadRequest, err), nil
+		return utils.ErrorResponse(http.StatusBadRequest, fmt.Errorf("invalid user ID: %v", err)), nil
+	}
+	reqType := request.QueryStringParameters["type"]
+	reqTitle := request.QueryStringParameters["title"]
+	reqDescription := request.QueryStringParameters["description"]
+	reqCategoryID, err := strconv.Atoi(request.QueryStringParameters["category_id"])
+	if err != nil {
+		return utils.ErrorResponse(http.StatusBadRequest, fmt.Errorf("invalid user ID: %v", err)), nil
+	}
+	reqDate, err := time.Parse(time.RFC3339, request.QueryStringParameters["date"])
+	if err != nil {
+		return utils.ErrorResponse(http.StatusBadRequest, fmt.Errorf("invalid user ID: %v", err)), nil
 	}
 
 	params := commonDB.GetAccountsParams{
-		UserID:      req.UserID,
-		Type:        req.Type,
-		Title:       req.Title,
-		Description: req.Description,
+		UserID:      int32(reqUserID),
+		Type:        reqType,
+		Title:       reqTitle,
+		Description: reqDescription,
 		CategoryID: sql.NullInt32{
-			Int32: req.CategoryID,
-			Valid: req.CategoryID > 0,
+			Int32: int32(reqCategoryID),
+			Valid: int32(reqCategoryID) > 0,
 		},
 		Date: sql.NullTime{
-			Time:  req.Date,
-			Valid: !req.Date.IsZero(),
+			Time:  reqDate,
+			Valid: !reqDate.IsZero(),
 		},
 	}
 
