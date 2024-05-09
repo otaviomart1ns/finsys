@@ -10,7 +10,7 @@ Globals:
     Environment:
       Variables:
         DB_DRIVER: postgres
-        DB_SOURCE: postgresql://postgres:pgpwd2024@db-finsys.cj6goom8aq3j.us-east-1.rds.amazonaws.com:5432/finsys
+        DB_SOURCE: postgresql://postgres:pgpwd2024@finsys.cj6goom8aq3j.us-east-1.rds.amazonaws.com:5432/finsys
 
 Resources:
   LoginFunction:
