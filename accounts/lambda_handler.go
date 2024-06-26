@@ -12,6 +12,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/otaviomart1ns/finsys/common/config"
 	commonDB "github.com/otaviomart1ns/finsys/common/db/sqlc"
+	"github.com/otaviomart1ns/finsys/common/utils"
 )
 
 var (
@@ -34,35 +35,61 @@ func init() {
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	headers := utils.AddCorsHeaders(map[string]string{
+		"Content-Type": "application/json",
+	})
+
+	if req.HTTPMethod == "OPTIONS" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusOK,
+			Headers:    headers,
+		}, nil
+	}
+
 	path := req.Path
 	switch req.HTTPMethod {
 	case "POST":
-		return AddAccount(ctx, req)
+		response, err := AddAccount(ctx, req)
+		response.Headers = headers
+		return response, err
 	case "PUT":
-		return UpdateAccount(ctx, req)
+		response, err := UpdateAccount(ctx, req)
+		response.Headers = headers
+		return response, err
 	case "DELETE":
-		return DeleteAccount(ctx, req)
+		response, err := DeleteAccount(ctx, req)
+		response.Headers = headers
+		return response, err
 	case "GET":
+		var response events.APIGatewayProxyResponse
+		var err error
 		if path == "/accounts" {
-			return GetAccounts(ctx, req)
-		}
-		pathParts := strings.Split(path, "/")
-		if len(pathParts) == 3 && pathParts[2] != "" {
-			return GetAccountByID(ctx, req)
-		} else if len(pathParts) == 5 && pathParts[1] == "accounts" {
-			if pathParts[2] == "graph" {
-				return GetAccountGraph(ctx, req)
-			} else if pathParts[2] == "reports" {
-				return GetAccountReports(ctx, req)
+			response, err = GetAccounts(ctx, req)
+		} else {
+			pathParts := strings.Split(path, "/")
+			if len(pathParts) == 3 && pathParts[2] != "" {
+				response, err = GetAccountByID(ctx, req)
+			} else if len(pathParts) == 5 && pathParts[1] == "accounts" {
+				if pathParts[2] == "graph" {
+					response, err = GetAccountGraph(ctx, req)
+				} else if pathParts[2] == "reports" {
+					response, err = GetAccountReports(ctx, req)
+				}
+			} else {
+				response = events.APIGatewayProxyResponse{
+					StatusCode: http.StatusNotFound,
+					Headers:    headers,
+					Body:       "Endpoint not found",
+				}
+				return response, nil
 			}
 		}
-		return events.APIGatewayProxyResponse{
-			StatusCode: http.StatusNotFound,
-			Body:       "Endpoint not found",
-		}, nil
+		response.Headers = headers
+		return response, err
 	default:
 		return events.APIGatewayProxyResponse{
 			StatusCode: http.StatusMethodNotAllowed,
+			Headers:    headers,
 			Body:       http.StatusText(http.StatusMethodNotAllowed),
 		}, nil
 	}

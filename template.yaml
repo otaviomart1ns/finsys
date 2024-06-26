@@ -10,9 +10,19 @@ Globals:
     Environment:
       Variables:
         DB_DRIVER: postgres
-        DB_SOURCE: postgresql://postgres:pgpwd2024@finsys.cj6goom8aq3j.us-east-1.rds.amazonaws.com:5432/finsys
+        DB_SOURCE: postgresql://postgres:pgpwd2024@localhost:5432/finsys?sslmode=disable
 
 Resources:
+  FinSysApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: FinSysApi
+      StageName: Prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+
   LoginFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -26,6 +36,7 @@ Resources:
           Properties:
             Path: /login
             Method: POST
+            RestApiId: !Ref FinSysApi
     Metadata:
       DockerTag: provided.al2023-v1
       DockerContext: ./
@@ -44,31 +55,37 @@ Resources:
           Properties:
             Path: /users
             Method: POST
+            RestApiId: !Ref FinSysApi
         UpdateUser:
           Type: Api
           Properties:
             Path: /users
             Method: PUT
+            RestApiId: !Ref FinSysApi
         DeleteUser:
           Type: Api
           Properties:
             Path: /users/{id}
             Method: DELETE
+            RestApiId: !Ref FinSysApi
         GetUsers:
           Type: Api
           Properties:
             Path: /users
             Method: GET
+            RestApiId: !Ref FinSysApi
         GetUserByID:
           Type: Api
           Properties:
             Path: /users/{id}
             Method: GET
+            RestApiId: !Ref FinSysApi
         GetUserByUsername:
           Type: Api
           Properties:
             Path: /users/username/{username}
             Method: GET
+            RestApiId: !Ref FinSysApi
     Metadata:
       DockerTag: provided.al2023-v1
       DockerContext: ./
@@ -87,26 +104,31 @@ Resources:
           Properties:
             Path: /categories
             Method: POST
+            RestApiId: !Ref FinSysApi
         UpdateCategory:
           Type: Api
           Properties:
             Path: /categories
             Method: PUT
+            RestApiId: !Ref FinSysApi
         DeleteCategory:
           Type: Api
           Properties:
             Path: /categories/{id}
             Method: DELETE
+            RestApiId: !Ref FinSysApi
         GetCategories:
           Type: Api
           Properties:
             Path: /categories
             Method: GET
+            RestApiId: !Ref FinSysApi
         GetCategoryByID:
           Type: Api
           Properties:
             Path: /categories/{id}
             Method: GET
+            RestApiId: !Ref FinSysApi
     Metadata:
       DockerTag: provided.al2023-v1
       DockerContext: ./
@@ -125,36 +147,43 @@ Resources:
           Properties:
             Path: /accounts
             Method: POST
+            RestApiId: !Ref FinSysApi
         UpdateAccount:
           Type: Api
           Properties:
             Path: /accounts
             Method: PUT
+            RestApiId: !Ref FinSysApi
         DeleteAccount:
           Type: Api
           Properties:
             Path: /accounts/{id}
             Method: DELETE
+            RestApiId: !Ref FinSysApi
         GetAccounts:
           Type: Api
           Properties:
             Path: /accounts
             Method: GET
+            RestApiId: !Ref FinSysApi
         GetAccountByID:
           Type: Api
           Properties:
             Path: /accounts/{id}
             Method: GET
+            RestApiId: !Ref FinSysApi
         GetAccountGraph:
           Type: Api
           Properties:
             Path: /accounts/graph/{user_id}/{type}
             Method: GET
+            RestApiId: !Ref FinSysApi
         GetAccountReports:
           Type: Api
           Properties:
             Path: /accounts/reports/{user_id}/{type}
             Method: GET
+            RestApiId: !Ref FinSysApi
     Metadata:
       DockerTag: provided.al2023-v1
       DockerContext: ./
@@ -163,7 +192,7 @@ Resources:
 Outputs:
   APIFinSys:
     Description: API Gateway endpoint URL for Prod
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/"
+    Value: !Sub "https://${FinSysApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
 
   LoginFunction:
     Description: Login Lambda Function ARN

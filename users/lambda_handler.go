@@ -11,6 +11,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/otaviomart1ns/finsys/common/config"
 	commonDB "github.com/otaviomart1ns/finsys/common/db/sqlc"
+	"github.com/otaviomart1ns/finsys/common/utils"
 )
 
 var (
@@ -33,26 +34,48 @@ func init() {
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	headers := utils.AddCorsHeaders(map[string]string{
+		"Content-Type": "application/json",
+	})
+
+	if req.HTTPMethod == "OPTIONS" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusOK,
+			Headers:    headers,
+		}, nil
+	}
+
 	switch req.HTTPMethod {
 	case "POST":
-		return AddUser(ctx, req)
+		response, err := AddUser(ctx, req)
+		response.Headers = headers
+		return response, err
 	case "PUT":
-		return UpdateUser(ctx, req)
+		response, err := UpdateUser(ctx, req)
+		response.Headers = headers
+		return response, err
 	case "DELETE":
-		return DeleteUser(ctx, req)
+		response, err := DeleteUser(ctx, req)
+		response.Headers = headers
+		return response, err
 	case "GET":
 		id := req.PathParameters["id"]
 		username := req.PathParameters["username"]
+		var response events.APIGatewayProxyResponse
+		var err error
 		if id != "" {
-			return GetUserByID(ctx, req)
+			response, err = GetUserByID(ctx, req)
 		} else if username != "" {
-			return GetUserByUsername(ctx, req)
+			response, err = GetUserByUsername(ctx, req)
 		} else {
-			return GetUsers(ctx, req)
+			response, err = GetUsers(ctx, req)
 		}
+		response.Headers = headers
+		return response, err
 	default:
 		return events.APIGatewayProxyResponse{
 			StatusCode: http.StatusMethodNotAllowed,
+			Headers:    headers,
 			Body:       http.StatusText(http.StatusMethodNotAllowed),
 		}, nil
 	}

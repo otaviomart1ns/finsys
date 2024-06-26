@@ -135,14 +135,8 @@ func GetAccounts(ctx context.Context, request events.APIGatewayProxyRequest) (ev
 	reqType := request.QueryStringParameters["type"]
 	reqTitle := request.QueryStringParameters["title"]
 	reqDescription := request.QueryStringParameters["description"]
-	reqCategoryID, err := strconv.Atoi(request.QueryStringParameters["category_id"])
-	if err != nil {
-		return utils.ErrorResponse(http.StatusBadRequest, fmt.Errorf("invalid user ID: %v", err)), nil
-	}
-	reqDate, err := time.Parse(time.RFC3339, request.QueryStringParameters["date"])
-	if err != nil {
-		return utils.ErrorResponse(http.StatusBadRequest, fmt.Errorf("invalid user ID: %v", err)), nil
-	}
+	reqCategoryID, _ := strconv.Atoi(request.QueryStringParameters["category_id"])
+	reqDate, _ := time.Parse(time.RFC3339, request.QueryStringParameters["date"])
 
 	params := commonDB.GetAccountsParams{
 		UserID:      int32(reqUserID),

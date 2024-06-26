@@ -11,6 +11,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/otaviomart1ns/finsys/common/config"
 	commonDB "github.com/otaviomart1ns/finsys/common/db/sqlc"
+	"github.com/otaviomart1ns/finsys/common/utils"
 )
 
 var (
@@ -33,23 +34,45 @@ func init() {
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	headers := utils.AddCorsHeaders(map[string]string{
+		"Content-Type": "application/json",
+	})
+
+	if req.HTTPMethod == "OPTIONS" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusOK,
+			Headers:    headers,
+		}, nil
+	}
+
 	switch req.HTTPMethod {
 	case "POST":
-		return AddCategory(ctx, req)
+		response, err := AddCategory(ctx, req)
+		response.Headers = headers
+		return response, err
 	case "PUT":
-		return UpdateCategory(ctx, req)
+		response, err := UpdateCategory(ctx, req)
+		response.Headers = headers
+		return response, err
 	case "DELETE":
-		return DeleteCategory(ctx, req)
+		response, err := DeleteCategory(ctx, req)
+		response.Headers = headers
+		return response, err
 	case "GET":
 		id := req.PathParameters["id"]
+		var response events.APIGatewayProxyResponse
+		var err error
 		if id != "" {
-			return GetCategoryByID(ctx, req)
+			response, err = GetCategoryByID(ctx, req)
 		} else {
-			return GetCategories(ctx, req)
+			response, err = GetCategories(ctx, req)
 		}
+		response.Headers = headers
+		return response, err
 	default:
 		return events.APIGatewayProxyResponse{
 			StatusCode: http.StatusMethodNotAllowed,
+			Headers:    headers,
 			Body:       http.StatusText(http.StatusMethodNotAllowed),
 		}, nil
 	}

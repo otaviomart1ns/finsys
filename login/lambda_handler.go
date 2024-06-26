@@ -11,6 +11,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/otaviomart1ns/finsys/common/config"
 	commonDB "github.com/otaviomart1ns/finsys/common/db/sqlc"
+	"github.com/otaviomart1ns/finsys/common/utils"
 )
 
 var (
@@ -33,12 +34,26 @@ func init() {
 }
 
 func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	headers := utils.AddCorsHeaders(map[string]string{
+		"Content-Type": "application/json",
+	})
+
+	if req.HTTPMethod == "OPTIONS" {
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusOK,
+			Headers:    headers,
+		}, nil
+	}
+
 	switch req.HTTPMethod {
 	case "POST":
-		return Login(ctx, req)
+		response, err := Login(ctx, req)
+		response.Headers = headers
+		return response, err
 	default:
 		return events.APIGatewayProxyResponse{
 			StatusCode: http.StatusMethodNotAllowed,
+			Headers:    headers,
 			Body:       http.StatusText(http.StatusMethodNotAllowed),
 		}, nil
 	}
